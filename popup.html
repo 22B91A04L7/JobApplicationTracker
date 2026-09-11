@@ -10,10 +10,69 @@
 
     <h2>Job Tracker</h2>
 
-    <p id="page-title">Getting page title...</p>
+    <p id="status">Getting job details...</p>
 
+    <div id="pending-job" hidden>
+
+        <h3>Pending Application</h3>
+
+        <p id="pending-title"></p>
+        <p id="pending-company"></p>
+        <p id="pending-location"></p>
+        <p id="pending-salary"></p>
+
+        <p>Did you apply for this job?</p>
+
+        <button id="applied-button">
+            Yes, I Applied
+        </button>
+
+        <button id="discard-button">
+            Discard
+        </button>
+
+    </div>
+
+    <div id="job-form" hidden>
+
+        <label>
+            Job Title
+            <input type="text" id="title">
+        </label>
+
+        <label>
+            Company
+            <input type="text" id="company">
+        </label>
+
+        <label>
+            Job ID
+            <input type="text" id="jobId">
+        </label>
+
+        <label>
+            Location
+            <input type="text" id="location">
+        </label>
+
+        <label>
+            Salary
+            <input type="text" id="salary">
+        </label>
+
+        <label>
+            Description
+            <textarea id="description"></textarea>
+        </label>
+
+        <button id="confirm-job">
+            Confirm Job
+        </button>
+
+    </div>
 
     <script src="popup.js"></script>
+
 </body>
 
 </html>

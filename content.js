@@ -1,7 +1,11 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.type === "GET_PAGE_TITLE") {
+
+    if (message.type === "GET_JOB_DATA") {
+
+        const jobData = document.body.innerText;
+
         sendResponse({
-            title: document.title
+            jobData: jobData
         });
     }
 });
