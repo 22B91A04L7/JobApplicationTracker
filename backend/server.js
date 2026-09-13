@@ -1,7 +1,25 @@
 const express = require("express");
 const app = express();
 
-require("dotenv").config();
+const mongoose = require("mongoose");
+const Job = require("./models/Job")
+
+require("dotenv").config(); // to process env variables
+
+//mongodb connection
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => {
+        console.log("MONGO DB connected!");
+        // Start server
+        app.listen(5000, () => {
+            console.log("SERVER running on PORT 5000");
+        });
+    })
+    .catch((error) => {
+        console.error("MongoDB connection failed:", error);
+        process.exit(1);
+    })
+
 
 const { GoogleGenAI } = require("@google/genai");
 const { Groq } = require("groq-sdk");
@@ -68,6 +86,81 @@ app.get("/test-groq", async (req, res) => {
     }
 });
 
+
+//GET --> retrive saved jobs
+app.get("/api/jobs", async (req, res) => {
+    try {
+        const jobs = await Job.find().sort({ createdAt: -1 })
+        res.status(200).json({
+            jobs: jobs
+        })
+    } catch (error) {
+        console.error("Fetch jobs error:", error);
+        res.status(500).json({
+            error: "Failed to fetch job applications"
+        });
+    }
+})
+
+// Job routes to post 
+app.post("/api/jobs", async (req, res) => {
+    try {
+        const {
+            title,
+            company,
+            jobId,
+            location,
+            salary,
+            description,
+            url,
+            source
+        } = req.body;
+
+        if (!title || !company || !url || !source) {
+            return res.status(400).json({
+                error: "title, company, url, and source are required"
+            });
+        }
+
+        const appliedAt = new Date();
+
+        const job = await Job.create({
+            userId: "local-user",
+
+            title,
+            company,
+            jobId: jobId || null,
+            location: location || null,
+            salary: salary || null,
+            description: description || null,
+
+            url,
+            source,
+
+            status: "Applied",
+            appliedAt,
+
+            timeline: [
+                {
+                    status: "Applied",
+                    timestamp: appliedAt
+                }
+            ]
+        });
+
+        res.status(201).json({
+            message: "Job application saved",
+            job
+        });
+
+    } catch (error) {
+        console.error("Save job error:", error);
+
+        res.status(500).json({
+            error: "Failed to save job application"
+        });
+    }
+});
 
 // Extract Job
 app.post("/api/jobs/extract", async (req, res) => {
@@ -181,7 +274,3 @@ app.get("/", (req, res) => {
 });
 
 
-// Start server
-app.listen(5000, () => {
-    console.log("SERVER running on PORT 5000");
-});
