@@ -14,14 +14,24 @@
 
     <div id="pending-job" hidden>
 
-        <h3>Pending Application</h3>
+        <div class="pending-header">
+            <div>
+                <h3>Application Pending</h3>
+                <p class="pending-subtitle">
+                    Waiting for your confirmation
+                </p>
+            </div>
 
-        <p id="pending-title"></p>
-        <p id="pending-company"></p>
-        <p id="pending-location"></p>
-        <p id="pending-salary"></p>
+            <span class="status-badge">Pending</span>
+        </div>
 
-        <p>Did you apply for this job?</p>
+        <p><strong>Title:</strong> <span id="pending-title"></span></p>
+        <p><strong>Company:</strong> <span id="pending-company"></span></p>
+        <p><strong>Location:</strong> <span id="pending-location"></span></p>
+        <p><strong>Salary:</strong> <span id="pending-salary"></span></p>
+
+        <p><strong>Have you applied for this job?</strong></p>
+        <p>Confirm only after submitting your application.</p>
 
         <button id="applied-button">
             Yes, I Applied
@@ -31,6 +41,18 @@
             Discard
         </button>
 
+    </div>
+
+    <div id="success-message" hidden>
+        <h3>Application Saved ✓</h3>
+
+        <p id="success-title"></p>
+        <p id="success-company"></p>
+        <p>Your application was saved successfully.</p>
+
+        <button id="capture-again-button">
+            Capture Another Job
+        </button>
     </div>
 
     <div id="job-form" hidden>
