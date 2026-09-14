@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Job({ job, onStatusChange }) {
+  const navigate = useNavigate();
+
   const [status, setStatus] = useState(job.status);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
+  //function to handle status of job
   async function handleStatusChange(event) {
     const newStatus = event.target.value;
 
@@ -79,6 +83,9 @@ function Job({ job, onStatusChange }) {
           Open original job posting
         </a>
       )}
+      <button type="button" onClick={() => navigate(`/jobs/${job._id}`)}>
+        View Details
+      </button>
     </article>
   );
 }
