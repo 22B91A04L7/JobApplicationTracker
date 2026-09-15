@@ -73,11 +73,6 @@ function Job({ job, onStatusChange }) {
         {new Date(job.appliedAt).toLocaleDateString()}
       </p>
 
-      <details>
-        <summary>View job description</summary>
-        <p>{job.description || "Description not available"}</p>
-      </details>
-
       {job.url && (
         <a href={job.url} target="_blank" rel="noreferrer">
           Open original job posting

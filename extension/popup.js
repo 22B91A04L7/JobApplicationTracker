@@ -6,7 +6,6 @@ const companyInput = document.getElementById("company");
 const jobIdInput = document.getElementById("jobId");
 const locationInput = document.getElementById("location");
 const salaryInput = document.getElementById("salary");
-const descriptionInput = document.getElementById("description");
 const confirmButton = document.getElementById("confirm-job");
 
 const pendingJobSection = document.getElementById("pending-job");
@@ -14,6 +13,13 @@ const pendingTitle = document.getElementById("pending-title");
 const pendingCompany = document.getElementById("pending-company");
 const pendingLocation = document.getElementById("pending-location");
 const pendingSalary = document.getElementById("pending-salary");
+
+const jobDescriptionInput = document.getElementById("jobDescription");
+const responsibilitiesInput = document.getElementById("responsibilities");
+const requiredSkillsInput = document.getElementById("requiredSkills");
+const preferredSkillsInput = document.getElementById("preferredSkills");
+const experienceInput = document.getElementById("experience");
+const educationInput = document.getElementById("education");
 
 const appliedButton = document.getElementById("applied-button");
 const discardButton = document.getElementById("discard-button");
@@ -103,14 +109,26 @@ function showJobForm(job) {
     jobIdInput.value = job.jobId || "";
     locationInput.value = job.location || "";
     salaryInput.value = job.salary || "";
-    descriptionInput.value = job.description || "";
+    jobDescriptionInput.value = job.jobDescription || "";
+
+    responsibilitiesInput.value =
+        job.responsibilities?.join("\n") || "";
+
+    requiredSkillsInput.value =
+        job.requiredSkills?.join("\n") || "";
+
+    preferredSkillsInput.value =
+        job.preferredSkills?.join("\n") || "";
+
+    experienceInput.value = job.experience || "";
+    educationInput.value = job.education || "";
 
     statusMessage.hidden = true;
     pendingJobSection.hidden = true;
     successMessage.hidden = true;
     jobForm.hidden = false;
 
-    resizeExtensionWindow(400, 600);
+    resizeExtensionWindow(400, 800);
 }
 
 async function extractJobFromActiveTab() {
@@ -194,7 +212,26 @@ confirmButton.addEventListener("click", async () => {
             jobId: jobIdInput.value.trim() || null,
             location: locationInput.value.trim() || null,
             salary: salaryInput.value.trim() || null,
-            description: descriptionInput.value.trim() || null,
+            jobDescription: jobDescriptionInput.value.trim() || null,
+
+            responsibilities: responsibilitiesInput.value
+                .split("\n")
+                .map(item => item.trim())
+                .filter(Boolean),
+
+            requiredSkills: requiredSkillsInput.value
+                .split("\n")
+                .map(item => item.trim())
+                .filter(Boolean),
+
+            preferredSkills: preferredSkillsInput.value
+                .split("\n")
+                .map(item => item.trim())
+                .filter(Boolean),
+
+            experience: experienceInput.value.trim() || null,
+            education: educationInput.value.trim() || null,
+
             url: currentUrl,
             source
         };

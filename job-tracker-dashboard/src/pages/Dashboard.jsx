@@ -65,9 +65,15 @@ function Dashboard() {
 
   return (
     <main>
-      <header>
-        <h1>Job Application Tracker</h1>
-        <p>Keep track of your job applications in one place.</p>
+      <header className="dashboard-header">
+        <div>
+          <p className="eyebrow">YOUR CAREER WORKSPACE</p>
+          <h1>Job Application Tracker</h1>
+          <p className="subtitle">
+            Keep track of your applications, monitor progress, and stay
+            organized.
+          </p>
+        </div>
       </header>
 
       <section>

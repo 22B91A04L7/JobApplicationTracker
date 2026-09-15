@@ -44,7 +44,7 @@ async function getJobById(req, res) {
     }
 }
 
-//controller to add a new job to db
+// Controller to add a new job to DB
 async function createJob(req, res) {
     try {
         const {
@@ -54,6 +54,12 @@ async function createJob(req, res) {
             location,
             salary,
             description,
+            jobDescription,
+            responsibilities,
+            requiredSkills,
+            preferredSkills,
+            experience,
+            education,
             url,
             source
         } = req.body;
@@ -74,7 +80,17 @@ async function createJob(req, res) {
             jobId: jobId || null,
             location: location || null,
             salary: salary || null,
+
+            // Keep old field for backward compatibility
             description: description || null,
+
+            // New AI-extracted fields
+            jobDescription: jobDescription || null,
+            responsibilities: responsibilities || [],
+            requiredSkills: requiredSkills || [],
+            preferredSkills: preferredSkills || [],
+            experience: experience || null,
+            education: education || null,
 
             url,
             source,
