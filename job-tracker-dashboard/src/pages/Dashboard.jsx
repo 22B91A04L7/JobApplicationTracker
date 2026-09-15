@@ -39,14 +39,25 @@ function Dashboard() {
   }
 
   if (loading) {
-    return <h2>Loading applications...</h2>;
+    return (
+      <main className="app-shell dashboard-page">
+        <section className="state-card" aria-live="polite">
+          <div className="loading-indicator" />
+          <h2>Loading applications...</h2>
+          <p>Preparing your job application workspace.</p>
+        </section>
+      </main>
+    );
   }
 
   if (error) {
     return (
-      <main>
-        <h2>Could not load applications</h2>
-        <p>{error}</p>
+      <main className="app-shell dashboard-page">
+        <section className="state-card state-card-error" role="alert">
+          <p className="eyebrow">Unable to refresh</p>
+          <h2>Could not load applications</h2>
+          <p>{error}</p>
+        </section>
       </main>
     );
   }
@@ -64,7 +75,7 @@ function Dashboard() {
   });
 
   return (
-    <main>
+    <main className="app-shell dashboard-page">
       <header className="dashboard-header">
         <div>
           <p className="eyebrow">YOUR CAREER WORKSPACE</p>
@@ -76,37 +87,74 @@ function Dashboard() {
         </div>
       </header>
 
-      <section>
-        <h2>Overview</h2>
-
-        <div>
-          <p>Total Applications</p>
-          <strong>{jobs.length}</strong>
+      <section className="overview-section" aria-labelledby="overview-title">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Snapshot</p>
+            <h2 id="overview-title">Overview</h2>
+          </div>
         </div>
 
-        <div>
-          <p>Applied</p>
-          <strong>{appliedCount}</strong>
+        <div className="overview-grid">
+          <div className="summary-card">
+            <p>Total Applications</p>
+            <strong>{jobs.length}</strong>
+            <span>Saved opportunities</span>
+          </div>
+
+          <div className="summary-card">
+            <p>Applied</p>
+            <strong>{appliedCount}</strong>
+            <span>Currently marked applied</span>
+          </div>
         </div>
       </section>
 
-      <section>
-        <h2>My Applications</h2>
+      <section
+        className="applications-section"
+        aria-labelledby="applications-title"
+      >
+        <div className="section-heading applications-heading">
+          <div>
+            <p className="eyebrow">Applications</p>
+            <h2 id="applications-title">My Applications</h2>
+          </div>
+          <p className="section-description">
+            Search by role, company, or location, then update progress from each
+            card.
+          </p>
+        </div>
 
-        <input
-          type="text"
-          placeholder="Search by title, company, or location..."
-          value={searchTerm}
-          onChange={(event) => setSearchTerm(event.target.value)}
-        />
+        <div className="search-panel">
+          <label htmlFor="application-search">Search applications</label>
+          <input
+            id="application-search"
+            type="text"
+            placeholder="Search by title, company, or location..."
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+          />
+        </div>
 
-        {filteredJobs.length === 0 ? (
-          <p>No matching applications found.</p>
-        ) : (
-          filteredJobs.map((job) => (
-            <Job key={job._id} job={job} onStatusChange={handleStatusChange} />
-          ))
-        )}
+        <div className="job-list">
+          {filteredJobs.length === 0 ? (
+            <div className="empty-state">
+              <h3>No matching applications found.</h3>
+              <p>
+                Try a different job title, company name, or location to find an
+                application.
+              </p>
+            </div>
+          ) : (
+            filteredJobs.map((job) => (
+              <Job
+                key={job._id}
+                job={job}
+                onStatusChange={handleStatusChange}
+              />
+            ))
+          )}
+        </div>
       </section>
     </main>
   );

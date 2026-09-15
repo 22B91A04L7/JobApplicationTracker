@@ -47,40 +47,52 @@ function Job({ job, onStatusChange }) {
   return (
     <article className="job-card">
       <div className="job-card-header">
-        <div>
+        <div className="job-title-group">
           <h3>{job.title}</h3>
           <p className="company">{job.company}</p>
         </div>
 
-        <select value={status} onChange={handleStatusChange} disabled={saving}>
-          <option value="Applied">Applied</option>
-          <option value="Assessment">Assessment</option>
-          <option value="Interview">Interview</option>
-          <option value="Selected">Selected</option>
-          <option value="Rejected">Rejected</option>
-          <option value="Offer Received">Offer Received</option>
-        </select>
+        <div className="status-control">
+          <label>Status</label>
+          <select
+            value={status}
+            onChange={handleStatusChange}
+            disabled={saving}
+          >
+            <option value="Applied">Applied</option>
+            <option value="Assessment">Assessment</option>
+            <option value="Interview">Interview</option>
+            <option value="Selected">Selected</option>
+            <option value="Rejected">Rejected</option>
+            <option value="Offer Received">Offer Received</option>
+          </select>
+        </div>
       </div>
 
       {error && <p className="error">{error}</p>}
 
-      <p>
-        <strong>Location:</strong> {job.location || "Not available"}
-      </p>
+      <div className="job-meta-grid">
+        <p>
+          <span>Location</span>
+          <strong>{job.location || "Not available"}</strong>
+        </p>
 
-      <p>
-        <strong>Applied on:</strong>{" "}
-        {new Date(job.appliedAt).toLocaleDateString()}
-      </p>
+        <p>
+          <span>Applied on</span>
+          <strong>{new Date(job.appliedAt).toLocaleDateString()}</strong>
+        </p>
+      </div>
 
-      {job.url && (
-        <a href={job.url} target="_blank" rel="noreferrer">
-          Open original job posting
-        </a>
-      )}
-      <button type="button" onClick={() => navigate(`/jobs/${job._id}`)}>
-        View Details
-      </button>
+      <div className="job-card-actions">
+        {job.url && (
+          <a href={job.url} target="_blank" rel="noreferrer">
+            Open original job posting
+          </a>
+        )}
+        <button type="button" onClick={() => navigate(`/jobs/${job._id}`)}>
+          View Details
+        </button>
+      </div>
     </article>
   );
 }
