@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
 function JobDetailsPage() {
   const { id } = useParams();
@@ -7,12 +7,23 @@ function JobDetailsPage() {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchJob() {
       try {
-        const response = await fetch(`/api/jobs/${id}`);
+        const token = localStorage.getItem("token");
 
+        const response = await fetch(`/api/jobs/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/login");
+          return;
+        }
         if (!response.ok) {
           throw new Error("Failed to fetch job details.");
         }
@@ -28,7 +39,7 @@ function JobDetailsPage() {
     }
 
     fetchJob();
-  }, [id]);
+  }, [id, navigate]);
 
   if (loading) {
     return (

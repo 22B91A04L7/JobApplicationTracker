@@ -4,13 +4,15 @@ const app = express();
 
 const mongoose = require("mongoose");
 const jobRoutes = require("./routes/JobRoutes")
+const authRoutes = require("./routes/authRoutes")
 
 
 // Middleware
 app.use(express.json());
 
 // API routes
-app.use("/", jobRoutes);
+app.use("/api", jobRoutes);
+app.use("/api/auth", authRoutes);
 
 // Root route
 app.get("/", (req, res) => {

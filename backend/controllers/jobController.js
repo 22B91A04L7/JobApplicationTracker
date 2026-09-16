@@ -5,7 +5,9 @@ const { extractJobData } = require("../services/aiService");
 //controller to fetch all jobs
 async function getJobs(req, res) {
     try {
-        const jobs = await Job.find().sort({ createdAt: -1 })
+        const jobs = await Job.find({
+            userId: req.user.userId
+        }).sort({ createdAt: -1 })
         res.status(200).json({
             jobs: jobs
         })
@@ -26,7 +28,10 @@ async function getJobById(req, res) {
                 error: "Invalid job ID format"
             });
         }
-        const job = await Job.findById(id);
+        const job = await Job.findOne({
+            _id: id,
+            userId: req.user.userId
+        });
         if (!job) {
             return res.status(404).json({
                 error: "Job application not found"
@@ -73,7 +78,7 @@ async function createJob(req, res) {
         const appliedAt = new Date();
 
         const job = await Job.create({
-            userId: "local-user",
+            userId: req.user.userId,
 
             title,
             company,
@@ -142,6 +147,11 @@ async function extractJob(req, res) {
 async function updateJobStatus(req, res) {
     try {
         const { id } = req.params;
+        if (!req.body || typeof req.body !== "object") {
+            return res.status(400).json({
+                error: "Request body must be valid JSON"
+            });
+        }
         const { status } = req.body;
         if (!mongoose.isValidObjectId(id)) {
             return res.status(400).json({
@@ -161,7 +171,10 @@ async function updateJobStatus(req, res) {
                 error: "Invalid status"
             });
         }
-        const job = await Job.findById(id);
+        const job = await Job.findOne({
+            _id: id,
+            userId: req.user.userId
+        });
         if (!job) {
             return res.status(404).json({
                 error: "Job application not found"

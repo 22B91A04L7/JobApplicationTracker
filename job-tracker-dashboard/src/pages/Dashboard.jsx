@@ -1,17 +1,35 @@
 import { useEffect, useState } from "react";
 import Job from "../components/Job";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const [jobs, setJobs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    navigate("/login");
+  }
 
   useEffect(() => {
     async function fetchJobs() {
       try {
-        const response = await fetch("/api/jobs");
+        const token = localStorage.getItem("token");
 
+        const response = await fetch("/api/jobs", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/login");
+          return;
+        }
         if (!response.ok) {
           throw new Error("Failed to fetch applications.");
         }
@@ -28,7 +46,7 @@ function Dashboard() {
     }
 
     fetchJobs();
-  }, []);
+  }, [navigate]);
 
   function handleStatusChange(jobId, newStatus) {
     setJobs((currentJobs) =>
@@ -85,6 +103,9 @@ function Dashboard() {
             organized.
           </p>
         </div>
+        <button type="button" onClick={handleLogout}>
+          Logout
+        </button>
       </header>
 
       <section className="overview-section" aria-labelledby="overview-title">

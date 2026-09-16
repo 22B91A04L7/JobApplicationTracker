@@ -17,10 +17,12 @@ function Job({ job, onStatusChange }) {
     setError("");
 
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(`/api/jobs/${job._id}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           status: newStatus,
@@ -86,7 +88,7 @@ function Job({ job, onStatusChange }) {
       <div className="job-card-actions">
         {job.url && (
           <a href={job.url} target="_blank" rel="noreferrer">
-            Open original job posting
+            Open job posting url
           </a>
         )}
         <button type="button" onClick={() => navigate(`/jobs/${job._id}`)}>
