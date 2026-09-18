@@ -1,0 +1,72 @@
+.extension-app {
+  width: 360px;
+  min-height: 180px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  color: #1f2937;
+  background: #f8fafc;
+}
+
+.extension-header {
+  padding: 16px 18px;
+  background: #111827;
+  color: #ffffff;
+}
+
+.extension-header h1 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.extension-header p {
+  margin: 4px 0 0;
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.extension-body {
+  padding: 22px;
+}
+
+.status-message {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.extension-body h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.extension-body p {
+  margin: 0 0 18px;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.extension-body button {
+  width: 100%;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.extension-body button:hover {
+  background: #1d4ed8;
+}
+
+.extension-body button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #dc2626 !important;
+}

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { EXTENSION_ID } from "../config";
 
 function Login() {
   const navigate = useNavigate();
@@ -32,7 +33,27 @@ function Login() {
         throw new Error(data.error || "Login failed");
       }
 
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.token); // saving token to local storage
+
+      //sending token via msg to extension
+      chrome.runtime.sendMessage(
+        EXTENSION_ID,
+        {
+          type: "AUTHENTICATE",
+          token: data.token,
+        },
+        (response) => {
+          if (chrome.runtime.lastError) {
+            console.warn(
+              "Could not authenticate extension:",
+              chrome.runtime.lastError.message,
+            );
+            return;
+          }
+
+          console.log("Extension authentication:", response);
+        },
+      );
 
       navigate("/jobs");
     } catch (error) {
@@ -47,7 +68,9 @@ function Login() {
     <main className="auth-page">
       <section className="auth-card" aria-labelledby="login-title">
         <div className="auth-brand">
-          <span className="brand-mark" aria-hidden="true">JT</span>
+          <span className="brand-mark" aria-hidden="true">
+            JT
+          </span>
           <span>Job Application Tracker</span>
         </div>
 
@@ -84,7 +107,11 @@ function Login() {
             />
           </div>
 
-          {error && <p className="error" role="alert">{error}</p>}
+          {error && (
+            <p className="error" role="alert">
+              {error}
+            </p>
+          )}
 
           <button className="auth-submit" type="submit" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
