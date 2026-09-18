@@ -1,32 +1,57 @@
-function PendingJob({ job, onApplied, onDiscard, saving }) {
+function PendingJob({ job, onApplied, onNotYet, onDiscard, saving }) {
   return (
     <section className="pending-job">
+      <p className="section-kicker">Awaiting confirmation</p>
       <h2>Application Pending</h2>
+      <p className="pending-intro">Did you apply for this job?</p>
 
       <div className="pending-job-details">
         <p>
-          <strong>Title:</strong> {job.title || "Title not available"}
+          <span>Title</span>
+          <strong>{job.title || "Title not available"}</strong>
         </p>
 
         <p>
-          <strong>Company:</strong> {job.company || "Company not available"}
+          <span>Company</span>
+          <strong>{job.company || "Company not available"}</strong>
         </p>
 
         <p>
-          <strong>Location:</strong> {job.location || "Location not available"}
+          <span>Location</span>
+          <strong>{job.location || "Location not available"}</strong>
         </p>
 
         <p>
-          <strong>Salary:</strong> {job.salary || "Salary not available"}
+          <span>Salary</span>
+          <strong>{job.salary || "Salary not available"}</strong>
         </p>
       </div>
 
       <div className="pending-job-actions">
-        <button type="button" onClick={onApplied} disabled={saving}>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={onApplied}
+          disabled={saving}
+        >
           {saving ? "Saving..." : "Yes, I Applied"}
         </button>
 
-        <button type="button" onClick={onDiscard} disabled={saving}>
+        <button
+          className="secondary-button"
+          type="button"
+          onClick={onNotYet}
+          disabled={saving}
+        >
+          Not Yet
+        </button>
+
+        <button
+          className="secondary-button"
+          type="button"
+          onClick={onDiscard}
+          disabled={saving}
+        >
           Discard
         </button>
       </div>

@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { getActiveTab } from "./utils/chrome";
 import "./App.css";
 import { extractJob, saveJob } from "./services/jobService";
-import { JobReviewForm } from "./components/JobReviewForm";
 import PendingJob from "./components/PendingJob";
 import ExtensionHeader from "./components/ExtensionHeader";
 import ApplicationSaved from "./components/ApplicationSaved";
 import JobExtractor from "./components/JobExtractor";
+import JobSummary from "./components/JobSummary";
 import {
   getPendingJob,
   setPendingJob as savePendingJob,
@@ -25,7 +25,6 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [jobData, setJobData] = useState(null);
-  const [editedJob, setEditedJob] = useState(null);
   const [pendingJob, setPendingJob] = useState(null);
   const [savedJob, setSavedJob] = useState(null);
   const [step, setStep] = useState("initial");
@@ -76,8 +75,7 @@ function App() {
       };
 
       setJobData(jobWithSource);
-      setEditedJob(jobWithSource);
-      setStep("review");
+      setStep("extracted");
     } catch (error) {
       console.error("Could not get job details:", error);
       setError(error.message);
@@ -86,17 +84,27 @@ function App() {
     }
   }
 
-  async function handleConfirmJob() {
+  // V1: AI-extracted data is tracked as-is, no edit step.
+  async function handleTrackJob() {
     try {
-      await savePendingJob(editedJob);
+      await savePendingJob(jobData);
 
-      setPendingJob(editedJob);
+      setPendingJob(jobData);
       setStep("pending");
       setJobData(null);
-      setEditedJob(null);
       setError("");
     } catch (error) {
       setError(error.message);
+    }
+  }
+
+  function handleNotYet() {
+    // pendingJob stays in chrome.storage.local untouched.
+    // Closing the popup is enough; reopening reads it back via getPendingJob().
+    try {
+      window.close();
+    } catch (error) {
+      console.error("Could not close popup:", error);
     }
   }
 
@@ -114,6 +122,17 @@ function App() {
       setError(error.message);
     }
   }
+
+  async function handleDiscard() {
+    try {
+      await removePendingJob();
+      setPendingJob(null);
+      setStep("initial");
+    } catch (error) {
+      setError(error.message);
+    }
+  }
+
   return (
     <main className="extension-app">
       {/* header component */}
@@ -128,27 +147,16 @@ function App() {
           />
         )}
 
-        {jobData && editedJob && (
-          <JobReviewForm
-            editedJob={editedJob}
-            setEditedJob={setEditedJob}
-            onConfirm={handleConfirmJob}
-          />
+        {step === "extracted" && jobData && (
+          <JobSummary job={jobData} onTrackJob={handleTrackJob} />
         )}
 
         {step === "pending" && pendingJob && (
           <PendingJob
             job={pendingJob}
             onApplied={handleApplied}
-            onDiscard={async () => {
-              try {
-                await removePendingJob();
-                setPendingJob(null);
-                setStep("initial");
-              } catch (error) {
-                setError(error.message);
-              }
-            }}
+            onNotYet={handleNotYet}
+            onDiscard={handleDiscard}
             saving={false}
           />
         )}
