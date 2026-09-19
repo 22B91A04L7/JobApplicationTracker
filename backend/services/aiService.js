@@ -1,5 +1,6 @@
-//Groq ai defined and api key from .env
+// Groq AI defined and API key from .env
 const { Groq } = require("groq-sdk");
+
 const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY
 });
@@ -9,9 +10,11 @@ async function extractJobData(pageText) {
         model: "openai/gpt-oss-20b",
         max_completion_tokens: 4096,
         reasoning_effort: "low",
+
         messages: [
             {
                 role: "system",
+                //prompt given to extract job data from the webpage content
                 content: `
 You are a job information extraction system.
 
@@ -49,11 +52,11 @@ Extract and organize the following information:
 
 - experience:
   Extract the stated experience requirement, if present.
-  Do not infer experience requirements. Return null if not present.
+  Do not infer experience requirements.
 
 - education:
   Extract the stated degree, branch, or academic requirement, if present.
-  Do not decide whether the user is eligible. Return null if not present.
+  Do not decide whether the user is eligible.
 
 Rules:
 1. Extract only information explicitly present in the webpage content.
@@ -63,8 +66,11 @@ Rules:
 5. Keep responsibilities and skills concise and easy to scan.
 6. Do not duplicate the entire job description in responsibilities.
 7. Do not include preferred skills in requiredSkills.
-8. Return null for unavailable text fields and [] for unavailable list fields.
-9. Return only the requested structured data.
+8. Every property in the requested schema must always be present.
+9. For unavailable text fields, return null.
+10. For unavailable list fields, return an empty array.
+11. Do not omit any requested property.
+12. Return only the requested structured data.
                 `
             },
             {
@@ -76,6 +82,7 @@ ${pageText}
                 `
             }
         ],
+
         response_format: {
             type: "json_schema",
             json_schema: {
@@ -83,33 +90,62 @@ ${pageText}
                 strict: true,
                 schema: {
                     type: "object",
-                    properties: {
-                        title: { type: "string" },
-                        company: { type: "string" },
-                        jobId: { type: ["string", "null"] },
-                        location: { type: ["string", "null"] },
-                        salary: { type: ["string", "null"] },
 
-                        jobDescription: { type: ["string", "null"] },
+                    properties: {
+                        title: {
+                            type: ["string", "null"]
+                        },
+
+                        company: {
+                            type: ["string", "null"]
+                        },
+
+                        jobId: {
+                            type: ["string", "null"]
+                        },
+
+                        location: {
+                            type: ["string", "null"]
+                        },
+
+                        salary: {
+                            type: ["string", "null"]
+                        },
+
+                        jobDescription: {
+                            type: ["string", "null"]
+                        },
 
                         responsibilities: {
                             type: "array",
-                            items: { type: "string" }
+                            items: {
+                                type: "string"
+                            }
                         },
 
                         requiredSkills: {
                             type: "array",
-                            items: { type: "string" }
+                            items: {
+                                type: "string"
+                            }
                         },
 
                         preferredSkills: {
                             type: "array",
-                            items: { type: "string" }
+                            items: {
+                                type: "string"
+                            }
                         },
 
-                        experience: { type: ["string", "null"] },
-                        education: { type: ["string", "null"] }
+                        experience: {
+                            type: ["string", "null"]
+                        },
+
+                        education: {
+                            type: ["string", "null"]
+                        }
                     },
+
                     required: [
                         "title",
                         "company",
@@ -123,13 +159,32 @@ ${pageText}
                         "experience",
                         "education"
                     ],
+
                     additionalProperties: false
                 }
             }
         }
     });
 
-    return JSON.parse(response.choices[0].message.content);
+    const extractedJob = JSON.parse(
+        response.choices[0].message.content
+    );
+
+    // Normalize nullable text fields so the rest of the application
+    // always receives predictable string values.
+    return {
+        title: extractedJob.title || "",
+        company: extractedJob.company || "",
+        jobId: extractedJob.jobId || "",
+        location: extractedJob.location || "",
+        salary: extractedJob.salary || "",
+        jobDescription: extractedJob.jobDescription || "",
+        responsibilities: extractedJob.responsibilities || [],
+        requiredSkills: extractedJob.requiredSkills || [],
+        preferredSkills: extractedJob.preferredSkills || [],
+        experience: extractedJob.experience || "",
+        education: extractedJob.education || ""
+    };
 }
 
 module.exports = {
