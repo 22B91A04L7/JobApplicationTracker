@@ -112,7 +112,7 @@ function Job({
             rel="noreferrer"
             aria-label={`Open original posting for ${job.title}`}
           >
-            Original posting
+            Job Post URL
           </a>
         )}
 
