@@ -35,7 +35,6 @@ function Dashboard() {
         }
 
         const data = await response.json();
-
         setJobs(Array.isArray(data) ? data : data.jobs || []);
       } catch (error) {
         console.error("Error fetching applications:", error);
@@ -60,7 +59,7 @@ function Dashboard() {
     return (
       <main className="app-shell dashboard-page">
         <section className="state-card" aria-live="polite">
-          <div className="loading-indicator" />
+          <div className="loading-indicator" aria-hidden="true" />
           <h2>Loading applications...</h2>
           <p>Preparing your job application workspace.</p>
         </section>
@@ -81,6 +80,12 @@ function Dashboard() {
   }
 
   const appliedCount = jobs.filter((job) => job.status === "Applied").length;
+  const interviewCount = jobs.filter(
+    (job) => job.status === "Interview",
+  ).length;
+  const offerCount = jobs.filter(
+    (job) => job.status === "Offer Received",
+  ).length;
 
   const filteredJobs = jobs.filter((job) => {
     const searchText = searchTerm.toLowerCase();
@@ -95,39 +100,33 @@ function Dashboard() {
   return (
     <main className="app-shell dashboard-page">
       <header className="dashboard-header">
-        <div>
-          <p className="eyebrow">YOUR CAREER WORKSPACE</p>
-          <h1>Job Application Tracker</h1>
-          <p className="subtitle">
-            Keep track of your applications, monitor progress, and stay
-            organized.
-          </p>
-        </div>
-        <button type="button" onClick={handleLogout}>
-          Logout
+        <a className="product-name" href="/jobs" aria-label="Job Tracker home">
+          <span className="product-mark" aria-hidden="true">
+            JT
+          </span>
+          <span>Job Tracker</span>
+        </a>
+        <button className="logout-button" type="button" onClick={handleLogout}>
+          Log out
         </button>
       </header>
 
-      <section className="overview-section" aria-labelledby="overview-title">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Snapshot</p>
-            <h2 id="overview-title">Overview</h2>
-          </div>
-        </div>
-
-        <div className="overview-grid">
-          <div className="summary-card">
-            <p>Total Applications</p>
-            <strong>{jobs.length}</strong>
-            <span>Saved opportunities</span>
-          </div>
-
-          <div className="summary-card">
-            <p>Applied</p>
-            <strong>{appliedCount}</strong>
-            <span>Currently marked applied</span>
-          </div>
+      <section className="career-section" aria-labelledby="career-title">
+        <p className="eyebrow">Your career</p>
+        <h1 id="career-title">Applications</h1>
+        <div className="career-summary" aria-label="Application summary">
+          <span>
+            <strong>{jobs.length}</strong> applications
+          </span>
+          <span>
+            <strong>{appliedCount}</strong> applied
+          </span>
+          <span>
+            <strong>{interviewCount}</strong> interviews
+          </span>
+          <span>
+            <strong>{offerCount}</strong> offers
+          </span>
         </div>
       </section>
 
@@ -135,35 +134,42 @@ function Dashboard() {
         className="applications-section"
         aria-labelledby="applications-title"
       >
-        <div className="section-heading applications-heading">
-          <div>
-            <p className="eyebrow">Applications</p>
-            <h2 id="applications-title">My Applications</h2>
+        <div className="applications-toolbar">
+          <div className="search-panel">
+            <label className="visually-hidden" htmlFor="application-search">
+              Search applications
+            </label>
+            <span className="search-icon" aria-hidden="true" />
+            <input
+              id="application-search"
+              type="search"
+              placeholder="Search applications..."
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+            />
           </div>
-          <p className="section-description">
-            Search by role, company, or location, then update progress from each
-            card.
+          <p className="result-count">
+            {filteredJobs.length}{" "}
+            {filteredJobs.length === 1 ? "application" : "applications"}
           </p>
         </div>
 
-        <div className="search-panel">
-          <label htmlFor="application-search">Search applications</label>
-          <input
-            id="application-search"
-            type="text"
-            placeholder="Search by title, company, or location..."
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-          />
-        </div>
+        <h2 className="visually-hidden" id="applications-title">
+          Application list
+        </h2>
 
         <div className="job-list">
           {filteredJobs.length === 0 ? (
             <div className="empty-state">
-              <h3>No matching applications found.</h3>
+              <h3>
+                {jobs.length === 0
+                  ? "No applications yet"
+                  : "No matching applications"}
+              </h3>
               <p>
-                Try a different job title, company name, or location to find an
-                application.
+                {jobs.length === 0
+                  ? "Track your first job using the Job Tracker extension."
+                  : "Try a different title, company, or location."}
               </p>
             </div>
           ) : (

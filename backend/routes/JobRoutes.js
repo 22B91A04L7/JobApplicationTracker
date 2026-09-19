@@ -1,7 +1,7 @@
 require("dotenv").config(); // to process env variables
 const express = require("express")
 const router = express.Router();
-const { getJobs, getJobById, createJob, extractJob, updateJobStatus } = require("../controllers/jobController")
+const { getJobs, getJobById, createJob, extractJob, updateJobStatus, deleteJob } = require("../controllers/jobController")
 const protect = require("../middlewares/authMiddleware");
 
 //update status of job
@@ -12,6 +12,9 @@ router.get("/jobs", protect, getJobs)
 
 //GET --> to retrive a single job by ID
 router.get("/jobs/:id", protect, getJobById)
+
+//deletes job with id
+router.delete("/jobs/:id", protect, deleteJob);
 
 // Job routes to post 
 router.post("/jobs", protect, createJob);

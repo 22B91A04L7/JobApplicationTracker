@@ -3,12 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 function Job({ job, onStatusChange }) {
   const navigate = useNavigate();
-
   const [status, setStatus] = useState(job.status);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  //function to handle status of job
   async function handleStatusChange(event) {
     const newStatus = event.target.value;
 
@@ -33,12 +31,9 @@ function Job({ job, onStatusChange }) {
         throw new Error("Failed to update status");
       }
 
-      // Notify App.jsx only after MongoDB is updated successfully
       onStatusChange(job._id, newStatus);
     } catch (error) {
       console.error("Status update error:", error);
-
-      // Restore the previous status if the request fails
       setStatus(job.status);
       setError("Could not update status");
     } finally {
@@ -46,20 +41,70 @@ function Job({ job, onStatusChange }) {
     }
   }
 
+  function openDetails() {
+    navigate(`/jobs/${job._id}`);
+  }
+
+  function handleRowKeyDown(event) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openDetails();
+    }
+  }
+
+  const appliedDate = new Date(job.appliedAt).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
   return (
-    <article className="job-card">
-      <div className="job-card-header">
-        <div className="job-title-group">
-          <h3>{job.title}</h3>
-          <p className="company">{job.company}</p>
-        </div>
+    <article
+      className="job-row"
+      role="link"
+      tabIndex="0"
+      aria-label={`View ${job.title} at ${job.company}`}
+      onClick={openDetails}
+      onKeyDown={handleRowKeyDown}
+    >
+      <div className="job-identity">
+        <h3>{job.title}</h3>
+        <p>{job.company}</p>
+      </div>
+
+      <div className="job-meta">
+        <span>{job.location || "Location not available"}</span>
+        <span className="applied-date">{appliedDate}</span>
+      </div>
+
+      <div
+        className="job-row-actions"
+        onClick={(event) => event.stopPropagation()}
+        onKeyDown={(event) => event.stopPropagation()}
+      >
+        {job.url && (
+          <a
+            className="posting-link"
+            href={job.url}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`Open original posting for ${job.title}`}
+          >
+            Original posting
+          </a>
+        )}
 
         <div className="status-control">
-          <label>Status</label>
+          <label className="visually-hidden" htmlFor={`status-${job._id}`}>
+            Status for {job.title}
+          </label>
           <select
+            id={`status-${job._id}`}
+            className={`status-select status-${status.toLowerCase().replaceAll(" ", "-")}`}
             value={status}
             onChange={handleStatusChange}
             disabled={saving}
+            aria-busy={saving}
           >
             <option value="Applied">Applied</option>
             <option value="Assessment">Assessment</option>
@@ -69,32 +114,17 @@ function Job({ job, onStatusChange }) {
             <option value="Offer Received">Offer Received</option>
           </select>
         </div>
+
+        <span className="row-chevron" aria-hidden="true">
+          ›
+        </span>
       </div>
 
-      {error && <p className="error">{error}</p>}
-
-      <div className="job-meta-grid">
-        <p>
-          <span>Location</span>
-          <strong>{job.location || "Not available"}</strong>
+      {error && (
+        <p className="row-error" role="alert">
+          {error}
         </p>
-
-        <p>
-          <span>Applied on</span>
-          <strong>{new Date(job.appliedAt).toLocaleDateString()}</strong>
-        </p>
-      </div>
-
-      <div className="job-card-actions">
-        {job.url && (
-          <a href={job.url} target="_blank" rel="noreferrer">
-            Open job posting url
-          </a>
-        )}
-        <button type="button" onClick={() => navigate(`/jobs/${job._id}`)}>
-          View Details
-        </button>
-      </div>
+      )}
     </article>
   );
 }

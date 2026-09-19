@@ -138,7 +138,10 @@ function App() {
       {/* header component */}
       <ExtensionHeader />
 
-      <section className="extension-body">
+      <section
+        className={`extension-body extension-step-${step}`}
+        aria-live="polite"
+      >
         {step === "initial" && (
           <JobExtractor
             loading={loading}

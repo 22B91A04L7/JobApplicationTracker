@@ -1,17 +1,36 @@
 function JobSummary({ job, onTrackJob }) {
+  const hasMetadata = job.location || job.experience || job.salary;
+
   return (
-    <section className="job-summary">
-      <p className="section-kicker">Job Details</p>
+    <section className="job-summary state-panel">
+      <p className="section-kicker">Job details</p>
       <h2>{job.title || "Title not available"}</h2>
       <p className="job-summary-company">
         {job.company || "Company not available"}
       </p>
 
-      <div className="job-summary-meta">
-        {job.location && <span>{job.location}</span>}
-        {job.experience && <span>{job.experience}</span>}
-        {job.salary && <span>{job.salary}</span>}
-      </div>
+      {hasMetadata && (
+        <dl className="job-summary-meta">
+          {job.location && (
+            <div>
+              <dt>Location</dt>
+              <dd>{job.location}</dd>
+            </div>
+          )}
+          {job.experience && (
+            <div>
+              <dt>Experience</dt>
+              <dd>{job.experience}</dd>
+            </div>
+          )}
+          {job.salary && (
+            <div>
+              <dt>Salary</dt>
+              <dd>{job.salary}</dd>
+            </div>
+          )}
+        </dl>
+      )}
 
       <button className="primary-button" type="button" onClick={onTrackJob}>
         Track This Job

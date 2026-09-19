@@ -1,31 +1,35 @@
 function PendingJob({ job, onApplied, onNotYet, onDiscard, saving }) {
   return (
-    <section className="pending-job">
-      <p className="section-kicker">Awaiting confirmation</p>
-      <h2>Application Pending</h2>
-      <p className="pending-intro">Did you apply for this job?</p>
-
-      <div className="pending-job-details">
-        <p>
-          <span>Title</span>
-          <strong>{job.title || "Title not available"}</strong>
-        </p>
-
-        <p>
-          <span>Company</span>
-          <strong>{job.company || "Company not available"}</strong>
-        </p>
-
-        <p>
-          <span>Location</span>
-          <strong>{job.location || "Location not available"}</strong>
-        </p>
-
-        <p>
-          <span>Salary</span>
-          <strong>{job.salary || "Salary not available"}</strong>
-        </p>
+    <section className="pending-job state-panel">
+      <div className="status-label">
+        <span className="status-dot" aria-hidden="true" />
+        Awaiting confirmation
       </div>
+      <h2>Application Pending</h2>
+
+      <div className="pending-job-summary">
+        <strong>{job.title || "Title not available"}</strong>
+        <span>{job.company || "Company not available"}</span>
+      </div>
+
+      <p className="pending-intro">Have you applied for this job?</p>
+
+      {(job.location || job.salary) && (
+        <dl className="pending-job-details">
+          {job.location && (
+            <div>
+              <dt>Location</dt>
+              <dd>{job.location}</dd>
+            </div>
+          )}
+          {job.salary && (
+            <div>
+              <dt>Salary</dt>
+              <dd>{job.salary}</dd>
+            </div>
+          )}
+        </dl>
+      )}
 
       <div className="pending-job-actions">
         <button
@@ -33,6 +37,7 @@ function PendingJob({ job, onApplied, onNotYet, onDiscard, saving }) {
           type="button"
           onClick={onApplied}
           disabled={saving}
+          aria-busy={saving}
         >
           {saving ? "Saving..." : "Yes, I Applied"}
         </button>
@@ -47,7 +52,7 @@ function PendingJob({ job, onApplied, onNotYet, onDiscard, saving }) {
         </button>
 
         <button
-          className="secondary-button"
+          className="discard-button"
           type="button"
           onClick={onDiscard}
           disabled={saving}

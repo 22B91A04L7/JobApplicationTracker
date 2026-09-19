@@ -80,7 +80,7 @@ function Login() {
           <p>Keep your next opportunity organized and moving forward.</p>
         </div>
 
-        <form className="auth-form" onSubmit={handleLogin}>
+        <form className="auth-form" onSubmit={handleLogin} aria-busy={loading}>
           <div className="form-field">
             <label htmlFor="email">Email address</label>
             <input
@@ -114,12 +114,13 @@ function Login() {
           )}
 
           <button className="auth-submit" type="submit" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+            {loading && <span className="button-spinner" aria-hidden="true" />}
+            <span>{loading ? "Signing in..." : "Sign in"}</span>
           </button>
         </form>
 
         <p className="auth-switch">
-          Don&apos;t have an account? <Link to="/signup">Create one</Link>
+          Don&apos;t have an account? <Link to="/signup">Create account</Link>
         </p>
       </section>
     </main>

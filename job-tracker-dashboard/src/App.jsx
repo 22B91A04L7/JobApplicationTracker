@@ -4,6 +4,7 @@ import JobDetailsPage from "./pages/JobDetailsPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
+import "./App.css";
 
 function App() {
   return (

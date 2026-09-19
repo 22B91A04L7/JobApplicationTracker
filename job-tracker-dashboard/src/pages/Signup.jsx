@@ -47,17 +47,21 @@ function Signup() {
     <main className="auth-page">
       <section className="auth-card" aria-labelledby="signup-title">
         <div className="auth-brand">
-          <span className="brand-mark" aria-hidden="true">JT</span>
+          <span className="brand-mark" aria-hidden="true">
+            JT
+          </span>
           <span>Job Application Tracker</span>
         </div>
 
         <div className="auth-heading">
           <p className="eyebrow">Start tracking smarter</p>
           <h1 id="signup-title">Create your account</h1>
-          <p>Build a clear view of every application, interview, and next step.</p>
+          <p>
+            Build a clear view of every application, interview, and next step.
+          </p>
         </div>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form className="auth-form" onSubmit={handleSubmit} aria-busy={loading}>
           <div className="form-field">
             <label htmlFor="name">Full name</label>
             <input
@@ -97,10 +101,15 @@ function Signup() {
             />
           </div>
 
-          {error && <p role="alert">{error}</p>}
+          {error && (
+            <p className="error" role="alert">
+              {error}
+            </p>
+          )}
 
           <button className="auth-submit" type="submit" disabled={loading}>
-            {loading ? "Creating account..." : "Sign Up"}
+            {loading && <span className="button-spinner" aria-hidden="true" />}
+            <span>{loading ? "Creating account..." : "Create account"}</span>
           </button>
         </form>
 

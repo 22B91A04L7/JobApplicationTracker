@@ -1,0 +1,420 @@
+/* Authentication presentation only. Shared colors and type come from index.css. */
+
+.auth-page {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  width: min(100% - 32px, 440px);
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: 32px 0;
+  place-items: center;
+}
+
+.auth-page::before {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(var(--border), var(--border)) 0 74px / 100% 1px no-repeat,
+    var(--page-bg);
+  content: "";
+}
+
+.auth-card {
+  width: 100%;
+  margin: 0;
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-soft);
+  animation: auth-card-enter 280ms ease-out both;
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  color: var(--text-strong);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.brand-mark {
+  display: grid;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  color: var(--surface);
+  background: var(--accent);
+  border-radius: 7px;
+  box-shadow: none;
+  font-size: 10px;
+  letter-spacing: 0;
+  place-items: center;
+}
+
+.auth-heading {
+  margin-bottom: 24px;
+}
+
+.auth-heading .eyebrow {
+  margin-bottom: 7px;
+}
+
+.auth-heading h1 {
+  margin: 0 0 8px;
+  color: var(--text-strong);
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.auth-heading p:last-child {
+  max-width: 360px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.auth-form {
+  display: grid;
+  gap: 16px;
+}
+
+.form-field {
+  display: grid;
+  gap: 7px;
+}
+
+.form-field label {
+  color: var(--text-strong);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.form-field input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  color: var(--text-strong);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  outline: none;
+}
+
+.form-field input::placeholder {
+  color: var(--muted-light);
+}
+
+.form-field input:hover {
+  border-color: var(--muted-light);
+}
+
+.form-field input:focus {
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.auth-form .error,
+.auth-form [role="alert"] {
+  margin: 0;
+  padding: 10px 12px;
+  color: var(--danger);
+  background: var(--danger-bg);
+  border: 1px solid color-mix(in srgb, var(--danger) 22%, transparent);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.auth-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 2px;
+  color: var(--surface);
+  background: var(--accent);
+  border-radius: 8px;
+  box-shadow: none;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.auth-submit:hover:not(:disabled) {
+  background: var(--accent-dark);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--accent) 20%, transparent);
+  transform: translateY(-1px);
+}
+
+.auth-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.auth-submit:disabled {
+  background: var(--accent);
+  box-shadow: none;
+  cursor: wait;
+  opacity: 0.68;
+}
+
+.button-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid color-mix(in srgb, var(--surface) 42%, transparent);
+  border-top-color: var(--surface);
+  border-radius: 50%;
+  animation: auth-spin 700ms linear infinite;
+}
+
+.auth-switch {
+  margin: 22px 0 0;
+  padding-top: 20px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.auth-switch a {
+  font-weight: 800;
+}
+
+@keyframes auth-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes auth-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 520px) {
+  .auth-page {
+    width: min(100% - 24px, 440px);
+    padding: 20px 0;
+  }
+
+  .auth-page::before {
+    background: var(--page-bg);
+  }
+
+  .auth-card {
+    padding: 24px 20px;
+  }
+
+  .auth-brand {
+    margin-bottom: 26px;
+  }
+
+  .auth-heading h1 {
+    font-size: 1.55rem;
+  }
+}
+
+@media (max-height: 680px) and (min-width: 521px) {
+  .auth-page {
+    padding: 20px 0;
+  }
+
+  .auth-card {
+    padding-top: 26px;
+    padding-bottom: 26px;
+  }
+
+  .auth-brand {
+    margin-bottom: 22px;
+  }
+
+  .auth-heading {
+    margin-bottom: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-card,
+  .button-spinner {
+    animation: none;
+  }
+
+  .auth-submit:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+
+/* Job details delete actions */
+
+.details-page .details-header {
+  align-items: flex-start;
+}
+
+.details-page .details-heading {
+  min-width: 0;
+}
+
+.details-page .details-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.details-page .delete-application-trigger,
+.details-page .delete-cancel-button,
+.details-page .delete-confirm-button {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 13px;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.details-page .delete-application-trigger {
+  color: var(--danger);
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--danger) 32%, var(--border));
+}
+
+.details-page .delete-application-trigger:hover {
+  background: var(--danger-bg);
+  border-color: color-mix(in srgb, var(--danger) 48%, var(--border));
+}
+
+.details-page .delete-confirmation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 8px;
+  padding: 18px 20px;
+  background: var(--danger-bg);
+  border: 1px solid color-mix(in srgb, var(--danger) 24%, var(--border));
+  border-radius: var(--radius-sm);
+}
+
+.details-page .delete-confirmation-copy {
+  min-width: 0;
+}
+
+.details-page .delete-confirmation h2 {
+  margin: 0 0 5px;
+  color: var(--text-strong);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.details-page .delete-confirmation p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.details-page .delete-confirmation .delete-error {
+  margin-top: 9px;
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.details-page .delete-confirmation-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.details-page .delete-cancel-button {
+  color: var(--text-strong);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+}
+
+.details-page .delete-cancel-button:hover:not(:disabled) {
+  background: var(--page-bg);
+  border-color: var(--muted-light);
+}
+
+.details-page .delete-confirm-button {
+  color: var(--surface);
+  background: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+.details-page .delete-confirm-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--danger) 88%, black);
+  border-color: color-mix(in srgb, var(--danger) 88%, black);
+}
+
+.details-page .delete-application-trigger:focus-visible,
+.details-page .delete-cancel-button:focus-visible,
+.details-page .delete-confirm-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 24%, transparent);
+  outline-offset: 2px;
+}
+
+.details-page .delete-cancel-button:disabled,
+.details-page .delete-confirm-button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+@media (max-width: 760px) {
+  .details-page .details-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .details-page .delete-confirmation {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 460px) {
+  .details-page .details-actions,
+  .details-page .delete-confirmation-actions {
+    display: grid;
+    width: 100%;
+  }
+
+  .details-page .details-actions > *,
+  .details-page .delete-confirmation-actions > * {
+    width: 100%;
+  }
+}
