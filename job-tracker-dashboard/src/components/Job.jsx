@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Job({ job, onStatusChange }) {
+function Job({
+  job,
+  onStatusChange,
+  selectionMode,
+  selected,
+  onToggleSelection,
+}) {
   const navigate = useNavigate();
   const [status, setStatus] = useState(job.status);
   const [saving, setSaving] = useState(false);
@@ -60,13 +66,29 @@ function Job({ job, onStatusChange }) {
 
   return (
     <article
-      className="job-row"
+      className={`job-row${selectionMode ? " job-row-selection-mode" : ""}`}
       role="link"
       tabIndex="0"
       aria-label={`View ${job.title} at ${job.company}`}
-      onClick={openDetails}
-      onKeyDown={handleRowKeyDown}
+      onClick={selectionMode ? undefined : openDetails}
+      onKeyDown={selectionMode ? undefined : handleRowKeyDown}
     >
+      {/* checkbox logic to select jobs */}
+      {selectionMode && (
+        <div
+          className="job-selection"
+          onClick={(event) => event.stopPropagation()}
+          onKeyDown={(event) => event.stopPropagation()}
+        >
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={() => onToggleSelection(job._id)}
+            aria-label={`Select ${job.title} at ${job.company}`}
+          />
+        </div>
+      )}
+
       <div className="job-identity">
         <h3>{job.title}</h3>
         <p>{job.company}</p>

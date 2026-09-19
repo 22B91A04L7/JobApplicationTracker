@@ -233,11 +233,51 @@ async function deleteJob(req, res) {
     }
 }
 
+//controller to delete multiple jobs
+async function deleteJobs(req, res) {
+    try {
+        const { jobIds } = req.body;
+
+        if (!Array.isArray(jobIds) || jobIds.length === 0) {
+            return res.status(400).json({
+                error: "No job applications selected"
+            });
+        }
+
+        const invalidIds = jobIds.some(
+            (id) => !mongoose.isValidObjectId(id)
+        );
+
+        if (invalidIds) {
+            return res.status(400).json({
+                error: "One or more job IDs are invalid"
+            });
+        }
+
+        const result = await Job.deleteMany({
+            _id: { $in: jobIds },
+            userId: req.user.userId
+        });
+
+        res.status(200).json({
+            message: "Job applications deleted successfully",
+            deletedCount: result.deletedCount
+        });
+    } catch (error) {
+        console.error("Delete jobs error:", error);
+
+        res.status(500).json({
+            error: "Failed to delete job applications"
+        });
+    }
+}
+
 module.exports = {
     getJobs,
     getJobById,
     createJob,
     extractJob,
     updateJobStatus,
-    deleteJob
+    deleteJob,
+    deleteJobs
 };

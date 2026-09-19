@@ -418,3 +418,262 @@
     width: 100%;
   }
 }
+
+
+/* Dashboard selection mode */
+
+.dashboard-page .applications-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.dashboard-page .search-panel {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard-page .toolbar-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.dashboard-page .delete-mode-button,
+.dashboard-page .cancel-selection-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 11px;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.dashboard-page .delete-mode-button {
+  color: var(--danger);
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--danger) 28%, var(--border));
+}
+
+.dashboard-page .delete-mode-button:hover {
+  background: var(--danger-bg);
+  border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
+}
+
+.dashboard-page .delete-icon {
+  display: inline-flex;
+  width: 15px;
+  height: 15px;
+}
+
+.dashboard-page .delete-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.dashboard-page .cancel-selection-button {
+  color: var(--text-strong);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+}
+
+.dashboard-page .cancel-selection-button:hover {
+  background: var(--page-bg);
+  border-color: var(--muted-light);
+}
+
+.dashboard-page .selection-count {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+
+/* Selection checkbox */
+
+.dashboard-page .job-row-selection-mode {
+  grid-template-columns:
+    22px
+    minmax(0, 1.35fr)
+    minmax(180px, 0.9fr)
+    auto;
+  cursor: default;
+}
+
+.dashboard-page .job-selection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-page .job-selection input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.dashboard-page .job-row-selection-mode:hover {
+  background: var(--surface-hover, var(--page-bg));
+}
+
+.dashboard-page .job-row-selection-mode .job-row-actions {
+  pointer-events: auto;
+}
+
+.dashboard-page .job-row-selection-mode .row-chevron {
+  display: none;
+}
+
+.dashboard-page .delete-mode-button:focus-visible,
+.dashboard-page .cancel-selection-button:focus-visible,
+.dashboard-page .job-selection input:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  outline-offset: 2px;
+}
+
+
+/* Mobile */
+
+@media (max-width: 700px) {
+  .dashboard-page .applications-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dashboard-page .toolbar-actions {
+    justify-content: flex-end;
+  }
+
+  .dashboard-page .job-row-selection-mode {
+    grid-template-columns:
+      22px
+      minmax(0, 1fr)
+      auto;
+  }
+}
+
+/* Bulk delete confirmation */
+
+.dashboard-page .delete-selected-button,
+.dashboard-page .delete-selected-confirm-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 11px;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.dashboard-page .delete-selected-button {
+  color: var(--surface);
+  background: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+.dashboard-page .delete-selected-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--danger) 88%, black);
+  border-color: color-mix(in srgb, var(--danger) 88%, black);
+}
+
+.dashboard-page .delete-selected-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.dashboard-page .bulk-delete-confirmation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 12px;
+  padding: 18px 20px;
+  background: var(--danger-bg);
+  border: 1px solid color-mix(in srgb, var(--danger) 24%, var(--border));
+  border-radius: var(--radius-sm);
+}
+
+.dashboard-page .bulk-delete-confirmation h2 {
+  margin: 0 0 5px;
+  color: var(--text-strong);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.dashboard-page .bulk-delete-confirmation p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.dashboard-page .bulk-delete-error {
+  margin-top: 9px !important;
+  color: var(--danger) !important;
+  font-weight: 700;
+}
+
+.dashboard-page .bulk-delete-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.dashboard-page .delete-selected-confirm-button {
+  color: var(--surface);
+  background: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+.dashboard-page .delete-selected-confirm-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--danger) 88%, black);
+  border-color: color-mix(in srgb, var(--danger) 88%, black);
+}
+
+.dashboard-page .delete-selected-confirm-button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.dashboard-page .delete-selected-button:focus-visible,
+.dashboard-page .delete-selected-confirm-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 700px) {
+  .dashboard-page .bulk-delete-confirmation {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .dashboard-page .bulk-delete-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

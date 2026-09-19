@@ -7,11 +7,107 @@ function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedJobIds, setSelectedJobIds] = useState([]);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const navigate = useNavigate();
 
   function handleLogout() {
     localStorage.removeItem("token");
     navigate("/login");
+  }
+  function toggleSelectionMode() {
+    setSelectionMode((current) => !current);
+    setSelectedJobIds([]);
+  }
+
+  function toggleJobSelection(jobId) {
+    setSelectedJobIds((current) =>
+      current.includes(jobId)
+        ? current.filter((id) => id !== jobId)
+        : [...current, jobId],
+    );
+  }
+
+  function cancelSelection() {
+    setSelectionMode(false);
+    setSelectedJobIds([]);
+  }
+
+  function openDeleteConfirmation() {
+    if (selectedJobIds.length === 0) {
+      return;
+    }
+
+    setDeleteError("");
+    setShowDeleteConfirmation(true);
+  }
+
+  function closeDeleteConfirmation() {
+    if (deleting) {
+      return;
+    }
+
+    setDeleteError("");
+    setShowDeleteConfirmation(false);
+  }
+
+  async function handleDeleteSelected() {
+    if (deleting || selectedJobIds.length === 0) {
+      return;
+    }
+
+    setDeleting(true);
+    setDeleteError("");
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("/api/jobs", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          jobIds: selectedJobIds,
+        }),
+      });
+
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Unable to delete the selected applications.");
+      }
+
+      const data = await response.json();
+
+      setJobs((currentJobs) =>
+        currentJobs.filter((job) => !selectedJobIds.includes(job._id)),
+      );
+
+      setSelectedJobIds([]);
+      setSelectionMode(false);
+      setShowDeleteConfirmation(false);
+
+      console.log("Deleted applications:", data.deletedCount);
+    } catch (error) {
+      console.error("Bulk delete error:", error);
+
+      setDeleteError(
+        error instanceof Error
+          ? error.message
+          : "Unable to delete the selected applications.",
+      );
+    } finally {
+      setDeleting(false);
+    }
   }
 
   useEffect(() => {
@@ -152,7 +248,108 @@ function Dashboard() {
             {filteredJobs.length}{" "}
             {filteredJobs.length === 1 ? "application" : "applications"}
           </p>
+          <div className="toolbar-actions">
+            {selectionMode ? (
+              <>
+                <span className="selection-count">
+                  {selectedJobIds.length} selected
+                </span>
+
+                <button
+                  className="cancel-selection-button"
+                  type="button"
+                  onClick={cancelSelection}
+                  disabled={deleting}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  className="delete-selected-button"
+                  type="button"
+                  onClick={openDeleteConfirmation}
+                  disabled={selectedJobIds.length === 0 || deleting}
+                >
+                  Delete
+                </button>
+              </>
+            ) : (
+              <button
+                className="delete-mode-button"
+                type="button"
+                onClick={toggleSelectionMode}
+                aria-label="Select applications to delete"
+                title="Select applications to delete"
+              >
+                <span className="delete-icon" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M3 6h18" />
+                    <path d="M8 6V4h8v2" />
+                    <path d="M19 6l-1 15H6L5 6" />
+                    <path d="M10 11v6" />
+                    <path d="M14 11v6" />
+                  </svg>
+                </span>
+                <span>Delete</span>
+              </button>
+            )}
+          </div>
         </div>
+
+        {showDeleteConfirmation && (
+          <section
+            className="bulk-delete-confirmation"
+            role="alertdialog"
+            aria-labelledby="bulk-delete-title"
+            aria-describedby="bulk-delete-description"
+            aria-busy={deleting}
+          >
+            <div>
+              <h2 id="bulk-delete-title">
+                Delete {selectedJobIds.length}{" "}
+                {selectedJobIds.length === 1 ? "application" : "applications"}?
+              </h2>
+
+              <p id="bulk-delete-description">
+                This will permanently remove the selected applications from your
+                tracker.
+              </p>
+
+              {deleteError && (
+                <p className="bulk-delete-error" role="alert">
+                  {deleteError}
+                </p>
+              )}
+            </div>
+
+            <div className="bulk-delete-actions">
+              <button
+                className="cancel-selection-button"
+                type="button"
+                onClick={closeDeleteConfirmation}
+                disabled={deleting}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="delete-selected-confirm-button"
+                type="button"
+                onClick={handleDeleteSelected}
+                disabled={deleting}
+              >
+                {deleting ? "Deleting..." : "Delete Applications"}
+              </button>
+            </div>
+          </section>
+        )}
 
         <h2 className="visually-hidden" id="applications-title">
           Application list
@@ -178,6 +375,9 @@ function Dashboard() {
                 key={job._id}
                 job={job}
                 onStatusChange={handleStatusChange}
+                selectionMode={selectionMode}
+                selected={selectedJobIds.includes(job._id)}
+                onToggleSelection={toggleJobSelection}
               />
             ))
           )}
