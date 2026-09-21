@@ -8,7 +8,7 @@ export function getAuthToken() {
             }
 
             if (!result.token) {
-                reject(new Error("Extension is not authenticated."));
+                reject(new Error("Connect your Job Tracker account to continue."));
                 return;
             }
 
