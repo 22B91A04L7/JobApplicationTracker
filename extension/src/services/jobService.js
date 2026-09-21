@@ -1,4 +1,4 @@
-import { getAuthToken } from "../utils/auth"
+import { getAuthToken, clearAuthToken } from "../utils/auth"
 
 export async function extractJob(pageText) {
     const token = await getAuthToken();
@@ -18,6 +18,11 @@ export async function extractJob(pageText) {
     );
 
     const data = await response.json();
+
+    if (response.status === 401) {
+        await clearAuthToken();
+        throw new Error("Your session has expired. Please reconnect your account.");
+    }
 
     if (!response.ok) {
         throw new Error(
@@ -48,6 +53,12 @@ export async function saveJob(job) {
     );
 
     const data = await response.json();
+
+    //handles session management
+    if (response.status === 401) {
+        await clearAuthToken();
+        throw new Error("Your session has expired. Please reconnect your account.");
+    }
 
     if (!response.ok) {
         throw new Error(
