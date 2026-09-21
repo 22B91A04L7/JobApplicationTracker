@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Job from "../components/Job";
 import { useNavigate } from "react-router-dom";
+import { EXTENSION_ID } from "../config";
 
 function Dashboard() {
   const [jobs, setJobs] = useState([]);
@@ -15,9 +16,27 @@ function Dashboard() {
   const navigate = useNavigate();
 
   function handleLogout() {
+    chrome.runtime.sendMessage(
+      EXTENSION_ID,
+      {
+        type: "LOGOUT",
+      },
+      (response) => {
+        if (chrome.runtime.lastError) {
+          console.warn(
+            "Could not log out extension:",
+            chrome.runtime.lastError.message,
+          );
+        } else {
+          console.log("Extension logout:", response);
+        }
+      },
+    );
+
     localStorage.removeItem("token");
     navigate("/login");
   }
+
   function toggleSelectionMode() {
     setSelectionMode((current) => !current);
     setSelectedJobIds([]);

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getActiveTab } from "./utils/chrome";
 import "./App.css";
 import { extractJob, saveJob } from "./services/jobService";
+import { getAuthToken } from "./utils/auth";
 import PendingJob from "./components/PendingJob";
 import ExtensionHeader from "./components/ExtensionHeader";
 import ApplicationSaved from "./components/ApplicationSaved";
@@ -12,6 +13,7 @@ import {
   setPendingJob as savePendingJob,
   removePendingJob,
 } from "./utils/storage";
+import { DASHBOARD_URL } from "./config";
 
 function getSourceFromUrl(url) {
   try {
@@ -28,10 +30,14 @@ function App() {
   const [pendingJob, setPendingJob] = useState(null);
   const [savedJob, setSavedJob] = useState(null);
   const [step, setStep] = useState("initial");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    async function loadPendingJob() {
+    async function initializeExtension() {
       try {
+        await getAuthToken();
+        setIsAuthenticated(true);
+
         const job = await getPendingJob();
 
         if (job) {
@@ -39,11 +45,11 @@ function App() {
           setStep("pending");
         }
       } catch (error) {
-        setError(error.message);
+        setIsAuthenticated(false);
       }
     }
 
-    loadPendingJob();
+    initializeExtension();
   }, []);
 
   //handles raw text extraction from web page
@@ -131,6 +137,37 @@ function App() {
     } catch (error) {
       setError(error.message);
     }
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <main className="extension-app">
+        <ExtensionHeader />
+
+        <section className="extension-body" aria-live="polite">
+          <section className="state-panel">
+            <p className="section-kicker">Account connection</p>
+            <h2>Connect your account</h2>
+            <p>
+              Sign in to your Job Tracker dashboard to connect this extension
+              and start tracking applications.
+            </p>
+
+            <button
+              className="primary-button"
+              type="button"
+              onClick={() => {
+                chrome.tabs.create({
+                  url: DASHBOARD_URL,
+                });
+              }}
+            >
+              Connect Account
+            </button>
+          </section>
+        </section>
+      </main>
+    );
   }
 
   return (
