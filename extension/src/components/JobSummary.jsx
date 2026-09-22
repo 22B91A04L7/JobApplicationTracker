@@ -1,10 +1,14 @@
-function JobSummary({ job, onTrackJob }) {
+function JobSummary({ job, onTrackJob, onViewApplication, duplicate, error }) {
   const hasMetadata = job.location || job.experience || job.salary;
 
   return (
     <section className="job-summary state-panel">
-      <p className="section-kicker">Job details</p>
+      <p className="section-kicker">
+        {duplicate ? "Already tracked" : "Job details"}
+      </p>
+
       <h2>{job.title || "Title not available"}</h2>
+
       <p className="job-summary-company">
         {job.company || "Company not available"}
       </p>
@@ -17,12 +21,14 @@ function JobSummary({ job, onTrackJob }) {
               <dd>{job.location}</dd>
             </div>
           )}
+
           {job.experience && (
             <div>
               <dt>Experience</dt>
               <dd>{job.experience}</dd>
             </div>
           )}
+
           {job.salary && (
             <div>
               <dt>Salary</dt>
@@ -32,9 +38,21 @@ function JobSummary({ job, onTrackJob }) {
         </dl>
       )}
 
-      <button className="primary-button" type="button" onClick={onTrackJob}>
-        Track This Job
-      </button>
+      {error && <p className="error-message">{error}</p>}
+
+      {duplicate ? (
+        <button
+          className="primary-button"
+          type="button"
+          onClick={onViewApplication}
+        >
+          View Application
+        </button>
+      ) : (
+        <button className="primary-button" type="button" onClick={onTrackJob}>
+          Track This Job
+        </button>
+      )}
     </section>
   );
 }

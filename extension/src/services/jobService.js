@@ -37,6 +37,44 @@ export async function extractJob(pageText) {
     return data.jobData;
 }
 
+export async function checkJobDuplicate(url) {
+    const token = await getAuthToken();
+
+    const response = await fetch(
+        "http://localhost:5000/api/jobs/check-duplicate",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                url,
+            }),
+        },
+    );
+
+    const data = await response.json();
+
+    if (response.status === 401) {
+        await clearAuthToken();
+        throw new Error(
+            "Your session has expired. Please reconnect your account.",
+        );
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            data.error || "Failed to check duplicate job.",
+        );
+    }
+
+    return {
+        exists: data.exists,
+        jobId: data.jobId,
+    };
+}
+
 export async function saveJob(job) {
     const token = await getAuthToken();
 

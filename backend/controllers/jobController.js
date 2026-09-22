@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Job = require("../models/Job")
 const { extractJobData } = require("../services/aiService");
+const { normalizeJobUrl } = require("../utils/url")
 
 //controller to fetch all jobs
 async function getJobs(req, res) {
@@ -75,6 +76,20 @@ async function createJob(req, res) {
             });
         }
 
+        const normalizedUrl = normalizeJobUrl(url);
+
+        //duplicate job application check
+        const existingJob = await Job.findOne({
+            userId: req.user.userId,
+            url: normalizedUrl
+        });
+
+        if (existingJob) {
+            return res.status(409).json({
+                error: "This job application is already in your tracker."
+            });
+        }
+
         const appliedAt = new Date();
 
         const job = await Job.create({
@@ -97,7 +112,7 @@ async function createJob(req, res) {
             experience: experience || null,
             education: education || null,
 
-            url,
+            url: normalizedUrl,
             source,
 
             status: "Applied",
@@ -272,6 +287,37 @@ async function deleteJobs(req, res) {
     }
 }
 
+// Controller to check whether a job URL is already tracked
+async function checkJobDuplicate(req, res) {
+    try {
+        const { url } = req.body;
+
+        if (!url) {
+            return res.status(400).json({
+                error: "Job URL is required"
+            });
+        }
+
+        const normalizedUrl = normalizeJobUrl(url);
+
+        const existingJob = await Job.findOne({
+            userId: req.user.userId,
+            url: normalizedUrl
+        });
+
+        res.status(200).json({
+            exists: !!existingJob,
+            jobId: existingJob ? existingJob._id : null
+        });
+    } catch (error) {
+        console.error("Check duplicate job error:", error);
+
+        res.status(500).json({
+            error: "Failed to check duplicate job"
+        });
+    }
+}
+
 module.exports = {
     getJobs,
     getJobById,
@@ -279,5 +325,6 @@ module.exports = {
     extractJob,
     updateJobStatus,
     deleteJob,
-    deleteJobs
+    deleteJobs,
+    checkJobDuplicate
 };
