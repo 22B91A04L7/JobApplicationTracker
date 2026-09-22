@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Job = require("../models/Job")
 const { extractJobData } = require("../services/aiService");
 const { normalizeJobUrl } = require("../utils/url")
+const { APPLICATION_STATUSES, STATUS_TRANSITIONS } = require("../constants/applicationStatus")
 
 //controller to fetch all jobs
 async function getJobs(req, res) {
@@ -173,15 +174,8 @@ async function updateJobStatus(req, res) {
                 error: "Invalid job ID format"
             });
         }
-        const allowedStatuses = [
-            "Applied",
-            "Assessment",
-            "Interview",
-            "Selected",
-            "Rejected",
-            "Offer Received"
-        ];
-        if (!allowedStatuses.includes(status)) {
+
+        if (!APPLICATION_STATUSES.includes(status)) {
             return res.status(400).json({
                 error: "Invalid status"
             });
@@ -195,6 +189,15 @@ async function updateJobStatus(req, res) {
                 error: "Job application not found"
             });
         }
+
+        const allowedNextStatuses = STATUS_TRANSITIONS[job.status];
+
+        if (!allowedNextStatuses.includes(status)) {
+            return res.status(400).json({
+                error: `Cannot change status from ${job.status} to ${status}`
+            });
+        }
+
         job.status = status;
         job.timeline.push({
             status,

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { STATUS_TRANSITIONS } from "../constants/applicationStatus";
 
 function Job({
   job,
@@ -12,16 +13,30 @@ function Job({
   const [status, setStatus] = useState(job.status);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [pendingStatus, setPendingStatus] = useState(null);
 
-  async function handleStatusChange(event) {
+  function handleStatusChange(event) {
     const newStatus = event.target.value;
 
-    setStatus(newStatus);
+    if (newStatus === status) {
+      return;
+    }
+
+    setError("");
+    setPendingStatus(newStatus);
+  }
+
+  async function confirmStatusChange() {
+    if (!pendingStatus || saving) {
+      return;
+    }
+
     setSaving(true);
     setError("");
 
     try {
       const token = localStorage.getItem("token");
+
       const response = await fetch(`/api/jobs/${job._id}/status`, {
         method: "PATCH",
         headers: {
@@ -29,22 +44,37 @@ function Job({
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          status: newStatus,
+          status: pendingStatus,
         }),
       });
+
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("Failed to update status");
       }
 
-      onStatusChange(job._id, newStatus);
+      setStatus(pendingStatus);
+      onStatusChange(job._id, pendingStatus);
+      setPendingStatus(null);
     } catch (error) {
       console.error("Status update error:", error);
-      setStatus(job.status);
       setError("Could not update status");
     } finally {
       setSaving(false);
     }
+  }
+
+  function cancelStatusChange() {
+    if (saving) {
+      return;
+    }
+
+    setPendingStatus(null);
   }
 
   function openDetails() {
@@ -73,7 +103,6 @@ function Job({
       onClick={selectionMode ? undefined : openDetails}
       onKeyDown={selectionMode ? undefined : handleRowKeyDown}
     >
-      {/* checkbox logic to select jobs */}
       {selectionMode && (
         <div
           className="job-selection"
@@ -120,20 +149,24 @@ function Job({
           <label className="visually-hidden" htmlFor={`status-${job._id}`}>
             Status for {job.title}
           </label>
+
           <select
             id={`status-${job._id}`}
-            className={`status-select status-${status.toLowerCase().replaceAll(" ", "-")}`}
+            className={`status-select status-${status
+              .toLowerCase()
+              .replaceAll(" ", "-")}`}
             value={status}
             onChange={handleStatusChange}
             disabled={saving}
             aria-busy={saving}
           >
-            <option value="Applied">Applied</option>
-            <option value="Assessment">Assessment</option>
-            <option value="Interview">Interview</option>
-            <option value="Selected">Selected</option>
-            <option value="Rejected">Rejected</option>
-            <option value="Offer Received">Offer Received</option>
+            <option value={status}>{status}</option>
+
+            {STATUS_TRANSITIONS[status].map((nextStatus) => (
+              <option key={nextStatus} value={nextStatus}>
+                {nextStatus}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -141,6 +174,47 @@ function Job({
           ›
         </span>
       </div>
+
+      {pendingStatus && (
+        <section
+          className="status-confirmation"
+          role="alertdialog"
+          onClick={(event) => event.stopPropagation()}
+          onKeyDown={(event) => event.stopPropagation()}
+          aria-labelledby={`status-confirmation-title-${job._id}`}
+          aria-describedby={`status-confirmation-description-${job._id}`}
+          aria-busy={saving}
+        >
+          <div>
+            <h4 id={`status-confirmation-title-${job._id}`}>
+              Change application status?
+            </h4>
+
+            <p id={`status-confirmation-description-${job._id}`}>
+              This application will move from {status} to {pendingStatus}.
+              Status changes cannot move backwards later.
+            </p>
+          </div>
+
+          <div className="status-confirmation-actions">
+            <button
+              type="button"
+              onClick={cancelStatusChange}
+              disabled={saving}
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              onClick={confirmStatusChange}
+              disabled={saving}
+            >
+              {saving ? "Updating..." : "Change Status"}
+            </button>
+          </div>
+        </section>
+      )}
 
       {error && (
         <p className="row-error" role="alert">

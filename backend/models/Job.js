@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { APPLICATION_STATUSES } = require("../constants/applicationStatus")
 
 const timelineEventSchema = new mongoose.Schema({
     status: {
@@ -96,14 +97,7 @@ const jobSchema = new mongoose.Schema(
         status: {
             type: String,
             required: true,
-            enum: [
-                "Applied",
-                "Assessment",
-                "Interview",
-                "Selected",
-                "Rejected",
-                "Offer Received"
-            ],
+            enum: APPLICATION_STATUSES,
             default: "Applied"
         },
 
