@@ -22,11 +22,13 @@ function JobDetailsPage() {
             Authorization: `Bearer ${token}`,
           },
         });
+
         if (response.status === 401) {
           localStorage.removeItem("token");
           navigate("/login");
           return;
         }
+
         if (!response.ok) {
           throw new Error("Failed to fetch job details.");
         }
@@ -150,11 +152,13 @@ function JobDetailsPage() {
           <p className="eyebrow">Application details</p>
           <h1>{job.title}</h1>
           <p className="details-company">{job.company}</p>
+
           <div className="header-meta">
             <span>{job.location || "Location not available"}</span>
             {job.status && <span className="detail-status">{job.status}</span>}
           </div>
         </div>
+
         <div className="details-actions">
           {job.url && (
             <a
@@ -188,6 +192,36 @@ function JobDetailsPage() {
       />
 
       <section
+        className="details-section timeline-section"
+        aria-labelledby="timeline-title"
+      >
+        <div className="section-heading">
+          <p className="eyebrow">Progress</p>
+          <h2 id="timeline-title">Application timeline</h2>
+        </div>
+
+        {job.timeline && job.timeline.length > 0 ? (
+          <ol className="timeline-list">
+            {job.timeline.map((event, index) => (
+              <li key={`${event.timestamp}-${index}`}>
+                <span className="timeline-marker" aria-hidden="true" />
+
+                <div className="timeline-event">
+                  <strong>{event.status}</strong>
+
+                  <time dateTime={event.timestamp}>
+                    {new Date(event.timestamp).toLocaleString()}
+                  </time>
+                </div>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p className="muted-text">No timeline events available.</p>
+        )}
+      </section>
+
+      <section
         className="details-section summary-section"
         aria-labelledby="summary-title"
       >
@@ -195,31 +229,38 @@ function JobDetailsPage() {
           <p className="eyebrow">Overview</p>
           <h2 id="summary-title">Job information</h2>
         </div>
+
         <dl className="details-grid">
           <div>
             <dt>Company</dt>
             <dd>{job.company}</dd>
           </div>
+
           <div>
             <dt>Location</dt>
             <dd>{job.location || "Not available"}</dd>
           </div>
+
           <div>
             <dt>Salary</dt>
             <dd>{job.salary || "Not available"}</dd>
           </div>
+
           <div>
             <dt>Experience</dt>
             <dd>{job.experience || "Not available"}</dd>
           </div>
+
           <div>
             <dt>Education</dt>
             <dd>{job.education || "Not available"}</dd>
           </div>
+
           <div>
             <dt>Job ID</dt>
             <dd>{job.jobId || "Not available"}</dd>
           </div>
+
           <div>
             <dt>Source</dt>
             <dd>{job.source || "Not available"}</dd>
@@ -234,6 +275,7 @@ function JobDetailsPage() {
         <div className="section-heading">
           <h2 id="description-title">Job description</h2>
         </div>
+
         <p>
           {job.jobDescription || job.description || "Description not available"}
         </p>
@@ -246,6 +288,7 @@ function JobDetailsPage() {
         <div className="section-heading">
           <h2 id="responsibilities-title">Responsibilities</h2>
         </div>
+
         {job.responsibilities && job.responsibilities.length > 0 ? (
           <ul className="content-list">
             {job.responsibilities.map((responsibility, index) => (
@@ -265,6 +308,7 @@ function JobDetailsPage() {
           <div className="section-heading">
             <h2 id="required-skills-title">Required skills</h2>
           </div>
+
           {job.requiredSkills && job.requiredSkills.length > 0 ? (
             <ul className="skill-list">
               {job.requiredSkills.map((skill, index) => (
@@ -283,6 +327,7 @@ function JobDetailsPage() {
           <div className="section-heading">
             <h2 id="preferred-skills-title">Preferred skills</h2>
           </div>
+
           {job.preferredSkills && job.preferredSkills.length > 0 ? (
             <ul className="skill-list">
               {job.preferredSkills.map((skill, index) => (
@@ -294,31 +339,6 @@ function JobDetailsPage() {
           )}
         </section>
       </div>
-
-      <section
-        className="details-section timeline-section"
-        aria-labelledby="timeline-title"
-      >
-        <div className="section-heading">
-          <p className="eyebrow">Progress</p>
-          <h2 id="timeline-title">Application timeline</h2>
-        </div>
-        {job.timeline && job.timeline.length > 0 ? (
-          <ol className="timeline-list">
-            {job.timeline.map((event, index) => (
-              <li key={`${event.timestamp}-${index}`}>
-                <span className="timeline-marker" aria-hidden="true" />
-                <div>
-                  <strong>{event.status}</strong>
-                  <time>{new Date(event.timestamp).toLocaleString()}</time>
-                </div>
-              </li>
-            ))}
-          </ol>
-        ) : (
-          <p className="muted-text">No timeline events available.</p>
-        )}
-      </section>
     </main>
   );
 }
