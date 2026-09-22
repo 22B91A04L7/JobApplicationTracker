@@ -677,3 +677,103 @@
     justify-content: flex-end;
   }
 }
+
+.status-confirmation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--page-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.status-confirmation h4 {
+  margin: 0 0 4px;
+  color: var(--text-strong);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.status-confirmation p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.status-confirmation-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-confirmation-actions button {
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.status-confirmation-actions button:first-child {
+  color: var(--text-strong);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+}
+
+.status-confirmation-actions button:first-child:hover:not(:disabled) {
+  background: var(--page-bg);
+  border-color: var(--muted-light);
+}
+
+.status-confirmation-actions button:last-child {
+  color: var(--surface);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.status-confirmation-actions button:last-child:hover:not(:disabled) {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+}
+
+.status-confirmation-actions button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  outline-offset: 2px;
+}
+
+.status-confirmation-actions button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+@media (max-width: 700px) {
+  .status-confirmation {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .status-confirmation-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 460px) {
+  .status-confirmation-actions {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+  }
+}
