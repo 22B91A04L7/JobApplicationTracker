@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getActiveTab } from "./utils/chrome";
 import "./App.css";
-import { extractJob, saveJob } from "./services/jobService";
+import { extractJob, saveJob, checkJobDuplicate } from "./services/jobService";
 import { getAuthToken } from "./utils/auth";
 import PendingJob from "./components/PendingJob";
 import ExtensionHeader from "./components/ExtensionHeader";
@@ -31,6 +31,7 @@ function App() {
   const [savedJob, setSavedJob] = useState(null);
   const [step, setStep] = useState("initial");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [duplicateJobId, setDuplicateJobId] = useState(null);
 
   useEffect(() => {
     async function initializeExtension() {
@@ -90,9 +91,17 @@ function App() {
     }
   }
 
-  // V1: AI-extracted data is tracked as-is, no edit step.
+  // AI-extracted data is tracked as-is, no edit step.
   async function handleTrackJob() {
     try {
+      const duplicateResult = await checkJobDuplicate(jobData.url);
+
+      if (duplicateResult.exists) {
+        setDuplicateJobId(duplicateResult.jobId);
+        setError("This job application is already in your tracker.");
+        return;
+      }
+      setDuplicateJobId(null);
       await savePendingJob(jobData);
 
       setPendingJob(jobData);
@@ -102,6 +111,17 @@ function App() {
     } catch (error) {
       setError(error.message);
     }
+  }
+
+  //to view duplicate job and stops tracking again
+  function handleViewDuplicateJob() {
+    if (!duplicateJobId) {
+      return;
+    }
+
+    chrome.tabs.create({
+      url: `${DASHBOARD_URL}/jobs/${duplicateJobId}`,
+    });
   }
 
   function handleNotYet() {
@@ -188,7 +208,13 @@ function App() {
         )}
 
         {step === "extracted" && jobData && (
-          <JobSummary job={jobData} onTrackJob={handleTrackJob} />
+          <JobSummary
+            job={jobData}
+            error={error}
+            duplicate={Boolean(duplicateJobId)}
+            onTrackJob={handleTrackJob}
+            onViewApplication={handleViewDuplicateJob}
+          />
         )}
 
         {step === "pending" && pendingJob && (
@@ -206,6 +232,7 @@ function App() {
             job={savedJob}
             onCaptureAnother={() => {
               setSavedJob(null);
+              setDuplicateJobId(null);
               setStep("initial");
             }}
           />
