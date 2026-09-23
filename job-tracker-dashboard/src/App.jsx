@@ -4,6 +4,7 @@ import JobDetailsPage from "./pages/JobDetailsPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ManualEntryPage from "./pages/ManualEntryPage";
 import "./App.css";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/jobs" element={<Dashboard />} />
+          <Route path="/jobs/manual-entry" element={<ManualEntryPage />} />
           <Route path="/jobs/:id" element={<JobDetailsPage />} />
         </Route>
 

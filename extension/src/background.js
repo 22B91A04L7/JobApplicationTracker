@@ -1,6 +1,61 @@
 // Handles authentication and logout requests from the website
 chrome.runtime.onMessageExternal.addListener(
     (message, sender, sendResponse) => {
+
+        // Handle manual entry job request
+        if (message.type === "GET_MANUAL_ENTRY_JOB") {
+            chrome.storage.local.get(["manualEntryJob"], (result) => {
+                if (chrome.runtime.lastError) {
+                    sendResponse({
+                        success: false,
+                        error: chrome.runtime.lastError.message,
+                    });
+                    return;
+                }
+
+                sendResponse({
+                    success: true,
+                    job: result.manualEntryJob || null,
+                });
+            });
+
+            return true;
+        }
+
+        //saves manual job entry to pending after manual edit
+        if (message.type === "SAVE_MANUAL_ENTRY_JOB") {
+            chrome.storage.local.set(
+                {
+                    pendingJob: message.job,
+                },
+                () => {
+                    if (chrome.runtime.lastError) {
+                        sendResponse({
+                            success: false,
+                            error: chrome.runtime.lastError.message,
+                        });
+                        return;
+                    }
+
+                    chrome.storage.local.remove(["manualEntryJob"], () => {
+                        if (chrome.runtime.lastError) {
+                            sendResponse({
+                                success: false,
+                                error: chrome.runtime.lastError.message,
+                            });
+                            return;
+                        }
+
+                        sendResponse({
+                            success: true,
+                        });
+                    });
+                },
+            );
+
+            return true;
+        }
+
         // Handle logout request
         if (message.type === "LOGOUT") {
             chrome.storage.local.remove(["token", "pendingJob"], () => {
