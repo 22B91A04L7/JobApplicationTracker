@@ -545,3 +545,63 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Manual completion action */
+
+.job-summary .manual-entry-button {
+  width: 100%;
+  min-height: 42px;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  color: var(--primary);
+  background: var(--primary-soft);
+  border: 1px solid rgba(47, 91, 211, 0.18);
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    color 150ms ease,
+    transform 120ms ease;
+}
+
+.job-summary .manual-entry-button:hover {
+  color: var(--primary-hover);
+  background: #e4eaff;
+  border-color: rgba(47, 91, 211, 0.28);
+}
+
+.job-summary .manual-entry-button:active {
+  transform: scale(0.985);
+}
+
+.job-summary .manual-entry-button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Manual completion prompt */
+
+.job-summary .manual-entry-prompt {
+  margin-top: 16px;
+  padding: 12px;
+  background: var(--danger-soft);
+  border: 1px solid #ecc9c6;
+  border-radius: var(--radius);
+}
+
+.job-summary .manual-entry-prompt .error-message {
+  margin: 0 0 10px !important;
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
+.job-summary .manual-entry-prompt .manual-entry-button {
+  margin-bottom: 0;
+  background: var(--surface);
+}

@@ -1,4 +1,10 @@
 function ApplicationSaved({ job, onCaptureAnother }) {
+  function handleViewDashboard() {
+    chrome.tabs.create({
+      url: "http://localhost:5173/jobs",
+    });
+  }
+
   return (
     <section className="application-saved state-panel">
       <div className="success-mark" aria-hidden="true">
@@ -6,8 +12,11 @@ function ApplicationSaved({ job, onCaptureAnother }) {
           <path d="m7.5 12.5 3 3 6-7" />
         </svg>
       </div>
+
       <p className="section-kicker">Application recorded</p>
+
       <h2>Application Saved</h2>
+
       <p className="saved-message">
         Your application has been added to your tracker.
       </p>
@@ -19,13 +28,23 @@ function ApplicationSaved({ job, onCaptureAnother }) {
         </div>
       )}
 
-      <button
-        className="primary-button"
-        type="button"
-        onClick={onCaptureAnother}
-      >
-        Capture Another Job
-      </button>
+      <div className="saved-actions">
+        <button
+          className="primary-button"
+          type="button"
+          onClick={handleViewDashboard}
+        >
+          View Dashboard
+        </button>
+
+        <button
+          className="secondary-button"
+          type="button"
+          onClick={onCaptureAnother}
+        >
+          Capture Another Job
+        </button>
+      </div>
     </section>
   );
 }

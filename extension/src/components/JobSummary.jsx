@@ -1,5 +1,16 @@
-function JobSummary({ job, onTrackJob, onViewApplication, duplicate, error }) {
+function JobSummary({
+  job,
+  onTrackJob,
+  onViewApplication,
+  onCompleteDetailsManually,
+  duplicate,
+  error,
+}) {
   const hasMetadata = job.location || job.experience || job.salary;
+
+  const isManualCompletionRequired =
+    error ===
+    "Could not identify enough information to track this opportunity.";
 
   return (
     <section className="job-summary state-panel">
@@ -38,21 +49,36 @@ function JobSummary({ job, onTrackJob, onViewApplication, duplicate, error }) {
         </dl>
       )}
 
-      {error && <p className="error-message">{error}</p>}
+      {isManualCompletionRequired ? (
+        <div className="manual-entry-prompt">
+          <p className="error-message">{error}</p>
 
-      {duplicate ? (
-        <button
-          className="primary-button"
-          type="button"
-          onClick={onViewApplication}
-        >
-          View Application
-        </button>
-      ) : (
-        <button className="primary-button" type="button" onClick={onTrackJob}>
-          Track This Job
-        </button>
-      )}
+          <button
+            className="manual-entry-button"
+            type="button"
+            onClick={onCompleteDetailsManually}
+          >
+            Complete Details Manually
+          </button>
+        </div>
+      ) : error ? (
+        <p className="error-message">{error}</p>
+      ) : null}
+
+      {!isManualCompletionRequired &&
+        (duplicate ? (
+          <button
+            className="primary-button"
+            type="button"
+            onClick={onViewApplication}
+          >
+            View Application
+          </button>
+        ) : (
+          <button className="primary-button" type="button" onClick={onTrackJob}>
+            Track This Job
+          </button>
+        ))}
     </section>
   );
 }

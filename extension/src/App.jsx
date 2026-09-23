@@ -93,6 +93,16 @@ function App() {
 
   // AI-extracted data is tracked as-is, no edit step.
   async function handleTrackJob() {
+    if (!jobData.title || !jobData.company || !jobData.url || !jobData.source) {
+      await chrome.storage.local.set({
+        manualEntryJob: jobData,
+      });
+
+      setError(
+        "Could not identify enough information to track this opportunity.",
+      );
+      return;
+    }
     try {
       const duplicateResult = await checkJobDuplicate(jobData.url);
 
@@ -113,6 +123,12 @@ function App() {
     }
   }
 
+  //handkles manual entry of job details when AI extraction fails
+  function handleCompleteDetailsManually() {
+    chrome.tabs.create({
+      url: `${DASHBOARD_URL}/jobs/manual-entry`,
+    });
+  }
   //to view duplicate job and stops tracking again
   function handleViewDuplicateJob() {
     if (!duplicateJobId) {
@@ -154,6 +170,7 @@ function App() {
       await removePendingJob();
       setPendingJob(null);
       setStep("initial");
+      setError("");
     } catch (error) {
       setError(error.message);
     }
@@ -214,6 +231,7 @@ function App() {
             duplicate={Boolean(duplicateJobId)}
             onTrackJob={handleTrackJob}
             onViewApplication={handleViewDuplicateJob}
+            onCompleteDetailsManually={handleCompleteDetailsManually}
           />
         )}
 
