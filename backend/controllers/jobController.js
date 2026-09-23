@@ -71,9 +71,32 @@ async function createJob(req, res) {
             source
         } = req.body;
 
-        if (!title || !company || !url || !source) {
+        if (
+            typeof title !== "string" ||
+            typeof company !== "string" ||
+            typeof url !== "string" ||
+            typeof source !== "string" ||
+            !title.trim() ||
+            !company.trim() ||
+            !url.trim() ||
+            !source.trim()
+        ) {
             return res.status(400).json({
-                error: "title, company, url, and source are required"
+                error: "title, company, url, and source must be non-empty strings"
+            });
+        }
+
+        try {
+            const parsedUrl = new URL(url);
+
+            if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+                return res.status(400).json({
+                    error: "url must be a valid HTTP or HTTPS URL"
+                });
+            }
+        } catch {
+            return res.status(400).json({
+                error: "url must be a valid HTTP or HTTPS URL"
             });
         }
 
@@ -135,6 +158,12 @@ async function createJob(req, res) {
     } catch (error) {
         console.error("Save job error:", error);
 
+        if (error.name === "ValidationError" || error.name === "CastError") {
+            return res.status(400).json({
+                error: "Invalid job application data"
+            });
+        }
+
         res.status(500).json({
             error: "Failed to save job application"
         });
@@ -145,6 +174,12 @@ async function createJob(req, res) {
 async function extractJob(req, res) {
     try {
         const { pageText } = req.body;
+        if (typeof pageText !== "string" || !pageText.trim()) {
+            return res.status(400).json({
+                error: "Page text is required"
+            });
+        }
+
         const jobData = await extractJobData(pageText);
         res.json({
             jobData: jobData

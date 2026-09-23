@@ -6,7 +6,14 @@ const User = require("../models/User")
 async function signup(req, res) {
     try {
         const { name, email, password } = req.body;
-        if (!name || !email || !password) {
+        if (
+            typeof name !== "string" ||
+            typeof email !== "string" ||
+            typeof password !== "string" ||
+            !name.trim() ||
+            !email.trim() ||
+            !password
+        ) {
             return res.status(400).json({
                 error: "Name, email, and password are required"
             });
@@ -48,7 +55,12 @@ async function login(req, res) {
     try {
         const { email, password } = req.body;
 
-        if (!email || !password) {
+        if (
+            typeof email !== "string" ||
+            typeof password !== "string" ||
+            !email.trim() ||
+            !password
+        ) {
             return res.status(400).json({
                 error: "Email and password are required"
             });
