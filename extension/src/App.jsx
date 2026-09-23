@@ -32,6 +32,7 @@ function App() {
   const [step, setStep] = useState("initial");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [duplicateJobId, setDuplicateJobId] = useState(null);
+  const [sessionExpired, setSessionExpired] = useState(false);
 
   useEffect(() => {
     async function initializeExtension() {
@@ -51,6 +52,23 @@ function App() {
     }
 
     initializeExtension();
+
+    function handleStorageChange(changes, areaName) {
+      if (areaName === "local" && changes.token) {
+        if (changes.token.newValue) {
+          setIsAuthenticated(true);
+          setSessionExpired(false);
+        } else {
+          setIsAuthenticated(false);
+        }
+      }
+    }
+
+    chrome.storage.onChanged.addListener(handleStorageChange);
+
+    return () => {
+      chrome.storage.onChanged.removeListener(handleStorageChange);
+    };
   }, []);
 
   //handles raw text extraction from web page
@@ -85,6 +103,16 @@ function App() {
       setStep("extracted");
     } catch (error) {
       console.error("Could not get job details:", error);
+
+      if (
+        error.message ===
+        "Your session has expired. Please reconnect your account."
+      ) {
+        setSessionExpired(true);
+        setIsAuthenticated(false);
+        return;
+      }
+
       setError(error.message);
     } finally {
       setLoading(false);
@@ -185,9 +213,14 @@ function App() {
           <section className="state-panel">
             <p className="section-kicker">Account connection</p>
             <h2>Connect your account</h2>
-            <p>
-              Sign in to your Job Tracker dashboard to connect this extension
-              and start tracking applications.
+            <p
+              className={
+                sessionExpired ? "error-message" : "connection-message"
+              }
+            >
+              {sessionExpired
+                ? "Your session has expired. Please reconnect your account."
+                : "Sign in to your Job Tracker dashboard to connect this extension and start tracking applications."}
             </p>
 
             <button
