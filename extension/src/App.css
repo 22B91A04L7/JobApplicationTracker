@@ -605,3 +605,7 @@
   margin-bottom: 0;
   background: var(--surface);
 }
+.extension-body .connection-message { 
+  --primary: #2f5bd3;
+  font-weight: bold; 
+}
