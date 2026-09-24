@@ -4,7 +4,7 @@ export async function extractJob(pageText) {
     const token = await getAuthToken();
 
     const response = await fetch(
-        "http://localhost:5000/api/jobs/extract",
+        "https://atrackie-backend.onrender.com/api/jobs/extract",
         {
             method: "POST",
             headers: {
@@ -41,7 +41,7 @@ export async function checkJobDuplicate(url) {
     const token = await getAuthToken();
 
     const response = await fetch(
-        "http://localhost:5000/api/jobs/check-duplicate",
+        "https://atrackie-backend.onrender.com/api/jobs/check-duplicate",
         {
             method: "POST",
             headers: {
@@ -79,7 +79,7 @@ export async function saveJob(job) {
     const token = await getAuthToken();
 
     const response = await fetch(
-        "http://localhost:5000/api/jobs",
+        "https://atrackie-backend.onrender.com/api/jobs",
         {
             method: "POST",
             headers: {

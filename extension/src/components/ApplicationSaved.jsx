@@ -1,7 +1,7 @@
 function ApplicationSaved({ job, onCaptureAnother }) {
   function handleViewDashboard() {
     chrome.tabs.create({
-      url: "http://localhost:5173/jobs",
+      url: "https://atrackie.vercel.app/jobs",
     });
   }
 
