@@ -41,8 +41,6 @@ function Signup() {
       setTimeout(() => {
         navigate("/login");
       }, 2000);
-
-      navigate("/login");
     } catch (error) {
       console.error("Signup error:", error);
       setError(error.message);
