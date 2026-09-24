@@ -16,22 +16,29 @@ function Dashboard() {
   const navigate = useNavigate();
 
   function handleLogout() {
-    chrome.runtime.sendMessage(
-      EXTENSION_ID,
-      {
-        type: "LOGOUT",
-      },
-      (response) => {
-        if (chrome.runtime.lastError) {
-          console.warn(
-            "Could not log out extension:",
-            chrome.runtime.lastError.message,
-          );
-        } else {
+    if (
+      typeof chrome !== "undefined" &&
+      chrome.runtime &&
+      typeof chrome.runtime.sendMessage === "function"
+    ) {
+      chrome.runtime.sendMessage(
+        EXTENSION_ID,
+        {
+          type: "LOGOUT",
+        },
+        (response) => {
+          if (chrome.runtime.lastError) {
+            console.warn(
+              "Could not log out extension:",
+              chrome.runtime.lastError.message,
+            );
+            return;
+          }
+
           console.log("Extension logout:", response);
-        }
-      },
-    );
+        },
+      );
+    }
 
     localStorage.removeItem("token");
     navigate("/login");
