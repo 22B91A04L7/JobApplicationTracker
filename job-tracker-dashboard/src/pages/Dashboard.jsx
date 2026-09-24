@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Job from "../components/Job";
 import { useNavigate } from "react-router-dom";
-import { EXTENSION_ID } from "../config";
+import { EXTENSION_ID, API_URL } from "../config";
 
 function Dashboard() {
   const [jobs, setJobs] = useState([]);
@@ -84,7 +84,7 @@ function Dashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("/api/jobs", {
+      const response = await fetch(`${API_URL}/api/jobs`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -134,7 +134,7 @@ function Dashboard() {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await fetch("/api/jobs", {
+        const response = await fetch(`${API_URL}/api/jobs`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

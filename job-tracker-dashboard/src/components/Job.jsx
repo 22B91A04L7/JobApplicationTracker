@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { STATUS_TRANSITIONS } from "../constants/applicationStatus";
+import { API_URL } from "../config";
 
 function Job({
   job,
@@ -37,7 +38,7 @@ function Job({
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch(`/api/jobs/${job._id}/status`, {
+      const response = await fetch(`${API_URL}/api/jobs/${job._id}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

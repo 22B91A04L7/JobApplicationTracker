@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import DeleteApplication from "../components/DeleteApplication";
+import { API_URL } from "../config";
 
 function JobDetailsPage() {
   const { id } = useParams();
@@ -17,7 +18,7 @@ function JobDetailsPage() {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await fetch(`/api/jobs/${id}`, {
+        const response = await fetch(`${API_URL}/api/jobs/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -67,7 +68,7 @@ function JobDetailsPage() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch(`/api/jobs/${id}`, {
+      const response = await fetch(`${API_URL}/api/jobs/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

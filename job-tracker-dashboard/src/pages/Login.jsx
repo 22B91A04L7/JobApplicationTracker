@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { EXTENSION_ID } from "../config";
+import { EXTENSION_ID, API_URL } from "../config";
 
 function Login() {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
