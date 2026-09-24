@@ -180,6 +180,12 @@ async function extractJob(req, res) {
             });
         }
 
+        if (pageText.length > 30000) {
+            return res.status(400).json({
+                error: "Page text is too large"
+            });
+        }
+
         const jobData = await extractJobData(pageText);
         res.json({
             jobData: jobData
