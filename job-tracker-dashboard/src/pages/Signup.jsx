@@ -7,6 +7,7 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -34,6 +35,12 @@ function Signup() {
       if (!response.ok) {
         throw new Error(data.error || "Signup failed");
       }
+
+      setSuccess("Account created successfully! Redirecting to login...");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
 
       navigate("/login");
     } catch (error) {
@@ -105,6 +112,12 @@ function Signup() {
           {error && (
             <p className="error" role="alert">
               {error}
+            </p>
+          )}
+
+          {success && (
+            <p className="success" role="status">
+              {success}
             </p>
           )}
 
