@@ -55,8 +55,6 @@ function Login() {
               );
               return;
             }
-
-            console.log("Extension authentication:", response);
           },
         );
       }

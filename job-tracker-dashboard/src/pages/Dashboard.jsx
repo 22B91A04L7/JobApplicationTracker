@@ -34,8 +34,6 @@ function Dashboard() {
             );
             return;
           }
-
-          console.log("Extension logout:", response);
         },
       );
     }
@@ -121,8 +119,6 @@ function Dashboard() {
       setSelectedJobIds([]);
       setSelectionMode(false);
       setShowDeleteConfirmation(false);
-
-      console.log("Deleted applications:", data.deletedCount);
     } catch (error) {
       console.error("Bulk delete error:", error);
 
