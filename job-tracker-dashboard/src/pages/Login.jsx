@@ -36,24 +36,30 @@ function Login() {
       localStorage.setItem("token", data.token); // saving token to local storage
 
       //sending token via msg to extension
-      chrome.runtime.sendMessage(
-        EXTENSION_ID,
-        {
-          type: "AUTHENTICATE",
-          token: data.token,
-        },
-        (response) => {
-          if (chrome.runtime.lastError) {
-            console.warn(
-              "Could not authenticate extension:",
-              chrome.runtime.lastError.message,
-            );
-            return;
-          }
+      if (
+        typeof chrome !== "undefined" &&
+        chrome.runtime &&
+        typeof chrome.runtime.sendMessage === "function"
+      ) {
+        chrome.runtime.sendMessage(
+          EXTENSION_ID,
+          {
+            type: "AUTHENTICATE",
+            token: data.token,
+          },
+          (response) => {
+            if (chrome.runtime.lastError) {
+              console.warn(
+                "Could not authenticate extension:",
+                chrome.runtime.lastError.message,
+              );
+              return;
+            }
 
-          console.log("Extension authentication:", response);
-        },
-      );
+            console.log("Extension authentication:", response);
+          },
+        );
+      }
 
       navigate("/jobs");
     } catch (error) {
