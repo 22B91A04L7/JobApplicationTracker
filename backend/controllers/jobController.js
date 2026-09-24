@@ -330,9 +330,23 @@ async function checkJobDuplicate(req, res) {
     try {
         const { url } = req.body;
 
-        if (!url) {
+        if (typeof url !== "string" || !url.trim()) {
             return res.status(400).json({
-                error: "Job URL is required"
+                error: "Job URL must be a non-empty string"
+            });
+        }
+
+        try {
+            const parsedUrl = new URL(url);
+
+            if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+                return res.status(400).json({
+                    error: "Job URL must be a valid HTTP or HTTPS URL"
+                });
+            }
+        } catch {
+            return res.status(400).json({
+                error: "Job URL must be a valid HTTP or HTTPS URL"
             });
         }
 
