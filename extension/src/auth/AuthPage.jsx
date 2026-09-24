@@ -32,7 +32,7 @@ function AuthPage() {
       <section className="auth-panel" aria-live="polite">
         <div className="auth-brand">
           <div className="brand-mark" aria-hidden="true">
-            JT
+            AT
           </div>
           <span>Job Tracker</span>
         </div>
@@ -58,7 +58,7 @@ function AuthPage() {
         <p className="auth-support">
           {status === "success"
             ? "You can close this page and continue tracking jobs."
-            : "Keep this page open while Job Tracker completes the connection."}
+            : "Keep this page open while ATrackie completes the connection."}
         </p>
       </section>
     </main>

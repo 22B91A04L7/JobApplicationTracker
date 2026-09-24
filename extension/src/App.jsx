@@ -220,7 +220,7 @@ function App() {
             >
               {sessionExpired
                 ? "Your session has expired. Please reconnect your account."
-                : "Sign in to your Job Tracker dashboard to connect this extension and start tracking applications."}
+                : "Sign in to your ATrackie dashboard to connect this extension and start tracking applications."}
             </p>
 
             <button
