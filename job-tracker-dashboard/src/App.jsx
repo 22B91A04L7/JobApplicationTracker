@@ -5,12 +5,15 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ManualEntryPage from "./pages/ManualEntryPage";
+import LandingPage from "./pages/LandingPage";
 import "./App.css";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<LandingPage />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
