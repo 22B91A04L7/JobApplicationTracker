@@ -136,6 +136,19 @@
   line-height: 1.45;
 }
 
+.auth-form .success,
+.auth-form [role="status"] {
+  margin: 0;
+  padding: 10px 12px;
+  color: var(--success);
+  background: var(--success-bg);
+  border: 1px solid color-mix(in srgb, var(--success) 22%, transparent);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
 .auth-submit {
   display: inline-flex;
   align-items: center;
