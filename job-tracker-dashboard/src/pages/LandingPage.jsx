@@ -244,6 +244,13 @@ function LandingPage() {
             </a>
           </nav>
           <div className="lp-nav-actions">
+            <a
+              className="lp-btn lp-btn-secondary"
+              href="#"
+              onClick={(event) => event.preventDefault()}
+            >
+              Download Chrome Extension
+            </a>
             <Link to="/login" className="lp-btn lp-btn-ghost">
               Sign in
             </Link>
@@ -253,6 +260,16 @@ function LandingPage() {
           </div>
         </div>
       </header>
+
+      <div className="lp-opening-message" aria-live="polite">
+        <span className="lp-opening-dot" aria-hidden="true" />
+        <span>
+          Download the ATrackie Chrome Extension before you sign up, and start
+          saving jobs while you browse.
+        </span>
+      </div>
+
+      <main id="main"></main>
 
       <main id="main">
         <section className="lp-hero" aria-labelledby="hero-title">
@@ -285,6 +302,57 @@ function LandingPage() {
               </p>
             </div>
             <DashboardPreview />
+          </div>
+        </section>
+
+        <section className="lp-section" aria-labelledby="extension-title">
+          <div className="lp-container">
+            <div className="lp-extension">
+              <div className="lp-extension-copy">
+                <p className="lp-eyebrow">Chrome extension</p>
+                <h2 id="extension-title">Save jobs while you browse</h2>
+                <p>
+                  The ATrackie Chrome extension captures job information
+                  directly from supported job pages — title, company, location,
+                  and details — and sends it straight to your ATrackie
+                  dashboard. Already saved that job? ATrackie lets you know.
+                </p>
+                <a
+                  className="lp-btn lp-btn-primary lp-btn-lg"
+                  href="#"
+                  onClick={(event) => event.preventDefault()}
+                >
+                  Download Chrome Extension
+                </a>
+              </div>
+              <div
+                className="lp-popup"
+                role="img"
+                aria-label="Preview of the ATrackie extension popup with an extracted job ready to save"
+              >
+                <div aria-hidden="true">
+                  <div className="lp-popup-head">
+                    <Brand />
+                    <span className="lp-popup-tag">Job detected</span>
+                  </div>
+                  <dl className="lp-popup-details">
+                    <div>
+                      <dt>Title</dt>
+                      <dd>Frontend Engineer</dd>
+                    </div>
+                    <div>
+                      <dt>Company</dt>
+                      <dd>Northwind Labs</dd>
+                    </div>
+                    <div>
+                      <dt>Location</dt>
+                      <dd>Remote</dd>
+                    </div>
+                  </dl>
+                  <div className="lp-popup-btn">Save application</div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -336,53 +404,6 @@ function LandingPage() {
                 </li>
               ))}
             </ol>
-          </div>
-        </section>
-
-        <section className="lp-section" aria-labelledby="extension-title">
-          <div className="lp-container">
-            <div className="lp-extension">
-              <div className="lp-extension-copy">
-                <p className="lp-eyebrow">Chrome extension</p>
-                <h2 id="extension-title">Save jobs while you browse</h2>
-                <p>
-                  The ATrackie Chrome extension captures job information
-                  directly from supported job pages — title, company, location,
-                  and details — and sends it straight to your ATrackie
-                  dashboard. Already saved that job? ATrackie lets you know.
-                </p>
-                <Link to="/signup" className="lp-btn lp-btn-primary lp-btn-lg">
-                  Get Started
-                </Link>
-              </div>
-              <div
-                className="lp-popup"
-                role="img"
-                aria-label="Preview of the ATrackie extension popup with an extracted job ready to save"
-              >
-                <div aria-hidden="true">
-                  <div className="lp-popup-head">
-                    <Brand />
-                    <span className="lp-popup-tag">Job detected</span>
-                  </div>
-                  <dl className="lp-popup-details">
-                    <div>
-                      <dt>Title</dt>
-                      <dd>Frontend Engineer</dd>
-                    </div>
-                    <div>
-                      <dt>Company</dt>
-                      <dd>Northwind Labs</dd>
-                    </div>
-                    <div>
-                      <dt>Location</dt>
-                      <dd>Remote</dd>
-                    </div>
-                  </dl>
-                  <div className="lp-popup-btn">Save application</div>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
