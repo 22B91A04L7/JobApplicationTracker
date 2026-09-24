@@ -21,13 +21,14 @@ app.get("/", (req, res) => {
     res.send("Job Tracker Backend is running");
 });
 
-const PORT = process.env.PORT || 5000;
 
 //mongodb connection
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         console.log("MONGO DB connected!");
         // Start server
+        const PORT = process.env.PORT || 5000;
+
         app.listen(PORT, () => {
             console.log(`SERVER running on PORT ${PORT}`);
         });
