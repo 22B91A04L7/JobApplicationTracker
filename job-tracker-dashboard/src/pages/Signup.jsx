@@ -48,9 +48,9 @@ function Signup() {
       <section className="auth-card" aria-labelledby="signup-title">
         <div className="auth-brand">
           <span className="brand-mark" aria-hidden="true">
-            JT
+            AT
           </span>
-          <span>Job Application Tracker</span>
+          <span>ATrackie</span>
         </div>
 
         <div className="auth-heading">

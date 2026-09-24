@@ -215,11 +215,11 @@ function Dashboard() {
   return (
     <main className="app-shell dashboard-page">
       <header className="dashboard-header">
-        <a className="product-name" href="/jobs" aria-label="Job Tracker home">
+        <a className="product-name" href="/jobs" aria-label="ATrackie home">
           <span className="product-mark" aria-hidden="true">
-            JT
+            AT
           </span>
-          <span>Job Tracker</span>
+          <span>ATrackie</span>
         </a>
         <button className="logout-button" type="button" onClick={handleLogout}>
           Log out
@@ -384,7 +384,7 @@ function Dashboard() {
               </h3>
               <p>
                 {jobs.length === 0
-                  ? "Track your first job using the Job Tracker extension."
+                  ? "Track your first application using the ATrackie extension."
                   : "Try a different title, company, or location."}
               </p>
             </div>

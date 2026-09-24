@@ -153,7 +153,7 @@ function ManualEntryPage() {
             onClick={() => navigate("/jobs")}
           >
             <span className="product-mark" aria-hidden="true">
-              JT
+              AT
             </span>
             <span>Job Tracker</span>
           </button>
@@ -204,9 +204,9 @@ function ManualEntryPage() {
           disabled={saving}
         >
           <span className="product-mark" aria-hidden="true">
-            JT
+            AT
           </span>
-          <span>Job Tracker</span>
+          <span>ATrackie</span>
         </button>
       </header>
 
